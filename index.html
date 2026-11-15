@@ -311,7 +311,7 @@ footer.pie a{color:var(--verde-osc);white-space:nowrap;display:inline-block;padd
 @media (min-width:1000px){
   .tema-llenar{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:start}
   .tema-llenar .temas{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .tema-llenar #paso-llenar{position:sticky;top:8px}
+  .tema-llenar #paso-llenar{position:sticky;top:64px}
   body.hoja-abierta #paso-llenar{padding-right:0}
   /* con el panel abierto, la caja ocupa todo el ancho que queda (las temáticas se esconden mientras eliges) */
   body.hoja-abierta .tema-llenar{padding-right:max(0px,calc(var(--ancho-hoja,560px) + 24px - var(--margen-der,0px)));grid-template-columns:minmax(0,1fr)}
@@ -325,6 +325,18 @@ footer.pie a{color:var(--verde-osc);white-space:nowrap;display:inline-block;padd
   #paso-tema.plegado .tema-elegido{flex-wrap:wrap}
   .tema-elegido .nom{flex:1 1 140px;min-width:0;font-family:"Fredoka",sans-serif;font-weight:600;font-size:18px;color:var(--lila)}
 }
+/* Botón de música */
+.musica{position:fixed;left:12px;top:12px;top:calc(12px + env(safe-area-inset-top,0px));z-index:45;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:6px 14px 6px 10px;border-radius:999px;border:2px solid var(--rosa-2);background:rgba(255,255,255,.94);backdrop-filter:blur(4px);color:var(--rosa-texto);font:700 14px/1 "Fredoka","Nunito",sans-serif;box-shadow:var(--sombra);cursor:pointer}
+.musica:hover{border-color:var(--rosa)}
+.musica:focus-visible{outline:3px solid var(--lila);outline-offset:2px}
+.musica .ico{font-size:18px;line-height:1;display:inline-block}
+.musica.on{background:var(--rosa);border-color:var(--rosa);color:#fff}
+.musica.on .ico{animation:notabaila 1.2s ease-in-out infinite}
+@media (max-width:699px){
+  header.cab{padding-top:60px}
+  .musica{padding:6px 12px 6px 10px;font-size:13px}
+}
+@keyframes notabaila{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-3px) rotate(8deg)}}
 @media (prefers-reduced-motion:reduce){
   *{transition:none!important;animation:none!important}
   html{scroll-behavior:auto}
@@ -332,6 +344,7 @@ footer.pie a{color:var(--verde-osc);white-space:nowrap;display:inline-block;padd
 </style>
 </head>
 <body>
+<button type="button" class="musica" id="musica" title="Poner música navideña"><span class="ico" aria-hidden="true">🎵</span><span class="txt">Música</span></button>
 <header class="cab envoltura">
   <svg class="deco d1" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0l3 9 9 3-9 3-3 9-3-9-9-3 9-3z" fill="#ffd23f"/></svg>
   <svg class="deco d2" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-8-5.3-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.7-8 11-8 11z" fill="#ff8cc0"/></svg>
@@ -871,7 +884,7 @@ $("h-buscar").addEventListener("input", function(){ H.q = this.value; pintarProd
 $("h-prods").addEventListener("click", function(ev){
   var b = ev.target.closest("[data-p]"); if (!b) return;
   var n = H.n, pid = b.getAttribute("data-p"); E.dias[n - 1] = pid; guardar();
-  pintarTodo(); animarCajita(n); marcarActiva(); pintarVitrina(true);
+  pintarTodo(); animarCajita(n); marcarActiva(); pintarVitrina(true); if (window.adventoTin) window.adventoTin();
   $("h-prods").querySelectorAll(".prod").forEach(function(x){ x.setAttribute("aria-pressed", x.getAttribute("data-p") === pid); });
 });
 $("h-quitar").addEventListener("click", function(){ E.dias[H.n - 1] = null; guardar(); pintarTodo(); pintarVitrina(false); marcarActiva(); $("h-prods").querySelectorAll(".prod").forEach(function(x){ x.setAttribute("aria-pressed", "false"); }); });
@@ -1039,6 +1052,153 @@ $("b-reinicio").addEventListener("click", function(){
 
 function pintarTodo(animar){ pintarCajas(); pintarTemas(); pintarCaja(animar); pintarResumen(); pintarBarra(); }
 cargar(); pintarDatos(); pintarTodo();
+})();
+</script>
+<script>
+/* ---------- Música: villancicos de dominio público como cajita musical (Web Audio, sin archivos) ---------- */
+(function(){
+  var boton = document.getElementById("musica");
+  var AC = window.AudioContext || window.webkitAudioContext;
+  if (!boton) return;
+  if (!AC) { boton.hidden = true; return; }
+  var CLAVE = "adviento-musica";
+
+  // Nota → frecuencia. "R" = silencio.
+  var SEMI = { C:0, "C#":1, D:2, "D#":3, E:4, F:5, "F#":6, G:7, "G#":8, A:9, "A#":10, B:11 };
+  function hz(n){ var m = /^([A-G]#?)(\d)$/.exec(n); return 440 * Math.pow(2, (SEMI[m[1]] + (+m[2] + 1) * 12 - 69) / 12); }
+  function L(txt){ return txt.trim().split(/\s+/).map(function(x){ var a = x.split(":"); return [a[0], +a[1]]; }); }
+
+  // Duraciones en negras (1 = negra). «u» = segundos por negra.
+  var CANCIONES = [
+    { nombre: "Noche de paz", u: 0.62, notas: L(
+      "G4:1.5 A4:0.5 G4:1 E4:3 G4:1.5 A4:0.5 G4:1 E4:3 " +
+      "D5:2 D5:1 B4:3 C5:2 C5:1 G4:3 " +
+      "A4:2 A4:1 C5:1.5 B4:0.5 A4:1 G4:1.5 A4:0.5 G4:1 E4:3 " +
+      "A4:2 A4:1 C5:1.5 B4:0.5 A4:1 G4:1.5 A4:0.5 G4:1 E4:3 " +
+      "D5:2 D5:1 F5:1.5 D5:0.5 B4:1 C5:3 E5:3 " +
+      "C5:1 G4:1 E4:1 G4:1.5 F4:0.5 D4:1 C4:6 R:2") },
+    { nombre: "Jingle Bells", u: 0.36, notas: L(
+      "E5:1 E5:1 E5:2 E5:1 E5:1 E5:2 E5:1 G5:1 C5:1.5 D5:0.5 E5:4 " +
+      "F5:1 F5:1 F5:1.5 F5:0.5 F5:1 E5:1 E5:1 E5:0.5 E5:0.5 E5:1 D5:1 D5:1 E5:1 D5:2 G5:2 " +
+      "E5:1 E5:1 E5:2 E5:1 E5:1 E5:2 E5:1 G5:1 C5:1.5 D5:0.5 E5:4 " +
+      "F5:1 F5:1 F5:1.5 F5:0.5 F5:1 E5:1 E5:1 E5:0.5 E5:0.5 G5:1 G5:1 F5:1 D5:1 C5:4 R:2") },
+    { nombre: "Deck the Halls", u: 0.4, notas: L(
+      "G5:1.5 F5:0.5 E5:1 D5:1 C5:1 D5:1 E5:1 C5:1 D5:0.5 E5:0.5 F5:0.5 D5:0.5 E5:1.5 D5:0.5 C5:1 B4:1 C5:2 " +
+      "G5:1.5 F5:0.5 E5:1 D5:1 C5:1 D5:1 E5:1 C5:1 D5:0.5 E5:0.5 F5:0.5 D5:0.5 E5:1.5 D5:0.5 C5:1 B4:1 C5:2 " +
+      "D5:1.5 E5:0.5 F5:1 D5:1 E5:1.5 F5:0.5 G5:1 D5:1 E5:0.5 F#5:0.5 G5:1 A5:0.5 B5:0.5 C6:1 B5:1 A5:1 G5:2 " +
+      "G5:1.5 F5:0.5 E5:1 D5:1 C5:1 D5:1 E5:1 C5:1 A5:0.5 A5:0.5 A5:0.5 A5:0.5 G5:1.5 F5:0.5 E5:1 D5:1 C5:2 R:2") },
+    { nombre: "We Wish You a Merry Christmas", u: 0.42, notas: L(
+      "G4:1 C5:1 C5:0.5 D5:0.5 C5:0.5 B4:0.5 A4:1 A4:1 A4:1 D5:1 D5:0.5 E5:0.5 D5:0.5 C5:0.5 B4:1 G4:1 G4:1 " +
+      "E5:1 E5:0.5 F5:0.5 E5:0.5 D5:0.5 C5:1 A4:1 G4:0.5 G4:0.5 A4:1 D5:1 B4:1 C5:2 R:2") }
+  ];
+
+  var ctx = null, maestro = null, sonando = false, timer = null;
+  var cancion = 0, idx = 0, proxima = 0;
+  var VOL = 0.16;
+
+  function iniciarCtx(){
+    if (ctx) return;
+    try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) {}
+    ctx = new AC();
+    maestro = ctx.createGain(); maestro.gain.value = VOL;
+    var filtro = ctx.createBiquadFilter(); filtro.type = "lowpass"; filtro.frequency.value = 5200;
+    maestro.connect(filtro); filtro.connect(ctx.destination);
+  }
+
+  // Sonido de cajita musical: fundamental + parciales de campanita, ataque rápido y caída larga.
+  function campana(f, t, dur, vol, destino){
+    var parciales = [[1, 1], [2, 0.32], [3, 0.12], [4.2, 0.06]];
+    var caida = Math.min(2.2, Math.max(0.6, dur * 1.6));
+    parciales.forEach(function(p){
+      var o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = "sine"; o.frequency.value = f * p[0];
+      var v = vol * p[1], fin = t + caida / (p[0] > 1 ? p[0] * 0.8 : 1);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(v, t + 0.006);
+      g.gain.exponentialRampToValueAtTime(0.0001, fin);
+      o.connect(g); g.connect(destino || maestro);
+      o.start(t); o.stop(fin + 0.05);
+    });
+  }
+
+  function programar(){
+    var c = CANCIONES[cancion];
+    if (proxima < ctx.currentTime) proxima = ctx.currentTime + 0.05;
+    while (proxima < ctx.currentTime + 0.25) {
+      var n = c.notas[idx], dur = n[1] * c.u;
+      if (n[0] !== "R") campana(hz(n[0]), proxima, dur, 0.5);
+      proxima += dur; idx++;
+      if (idx >= c.notas.length) { idx = 0; cancion = (cancion + 1) % CANCIONES.length; c = CANCIONES[cancion]; }
+    }
+  }
+
+  function guardar(v){ try { localStorage.setItem(CLAVE, v ? "1" : "0"); } catch (e) {} }
+  function pintar(){
+    boton.classList.toggle("on", sonando);
+    boton.querySelector(".ico").textContent = sonando ? "🔇" : "🎵";
+    boton.querySelector(".txt").textContent = sonando ? "Pausar" : "Música";
+    boton.title = sonando ? "Pausar la música" : "Poner música navideña";
+  }
+
+  // «quiere» = lo que pidió la persona; «sonando» = el audio de verdad está corriendo.
+  var quiere = false;
+  function fallo(){ quiere = false; sonando = false; pintar(); if (guardado()) armarEspera(); }
+  function tocar(){
+    quiere = true;
+    try { iniciarCtx(); } catch (e) { fallo(); return; }
+    var p;
+    try { p = ctx.state !== "running" ? ctx.resume() : Promise.resolve(); } catch (e) { p = Promise.reject(e); }
+    Promise.resolve(p).then(function(){
+      if (!quiere) { if (ctx.state === "running") ctx.suspend(); return; }
+      if (ctx.state !== "running") { fallo(); return; }
+      quitarEspera();
+      sonando = true; pintar();
+      maestro.gain.cancelScheduledValues(ctx.currentTime);
+      maestro.gain.setValueAtTime(VOL, ctx.currentTime);
+      clearInterval(timer); programar(); timer = setInterval(programar, 60);
+    }, fallo);
+  }
+  function pausar(){
+    quiere = false; sonando = false; pintar(); clearInterval(timer); timer = null;
+    if (!ctx) return;
+    var t = ctx.currentTime;
+    maestro.gain.cancelScheduledValues(t);
+    maestro.gain.setValueAtTime(maestro.gain.value, t);
+    maestro.gain.linearRampToValueAtTime(0.0001, t + 0.15);
+    setTimeout(function(){ if (!quiere && ctx.state === "running") ctx.suspend(); }, 200);
+  }
+
+  boton.addEventListener("click", function(){
+    quitarEspera();
+    if (quiere && sonando) { pausar(); guardar(false); } else { tocar(); guardar(true); }
+  });
+
+  // «Tin» al elegir una sorpresa (solo si la música está sonando).
+  window.adventoTin = function(){
+    if (!sonando || !ctx || ctx.state !== "running") return;
+    var t = ctx.currentTime + 0.01;
+    campana(hz("E6"), t, 0.3, 0.35); campana(hz("B6"), t + 0.09, 0.4, 0.3);
+  };
+
+  // Si la dejó prendida la vez pasada: el navegador no deja sonar solo,
+  // así que arranca con el primer toque válido (click, tecla o fin de toque).
+  function guardado(){ try { return localStorage.getItem(CLAVE) === "1"; } catch (e) { return false; } }
+  var EVENTOS = ["click", "keydown", "touchend"];
+  function alPrimerToque(ev){
+    if (ev.target && ev.target.closest && ev.target.closest("#musica")) return;
+    if (!sonando) tocar();
+  }
+  function armarEspera(){ EVENTOS.forEach(function(e){ document.addEventListener(e, alPrimerToque, true); }); }
+  function quitarEspera(){ EVENTOS.forEach(function(e){ document.removeEventListener(e, alPrimerToque, true); }); }
+  if (guardado()) armarEspera();
+
+  // Pestaña oculta → silencio; al volver, sigue si estaba sonando.
+  var porOculta = false;
+  document.addEventListener("visibilitychange", function(){
+    if (document.hidden && quiere) { porOculta = true; pausar(); }
+    else if (!document.hidden && porOculta) { porOculta = false; tocar(); }
+  });
+  pintar();
 })();
 </script>
 </body>
