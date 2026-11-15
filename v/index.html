@@ -1,0 +1,972 @@
+<!doctype html>
+<html lang="es-PE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#e86a92">
+<meta name="referrer" content="no-referrer">
+<meta name="description" content="Un calendario de adviento virtual: 24 puertas, una sorpresa cada día de diciembre.">
+<title>Calendario de adviento virtual</title>
+<style id="tv-css-base">
+/* Estilos base del motor: neutros y de baja especificidad (:where) para que cada estilo los cambie sin pelear. */
+*, *::before, *::after { box-sizing: border-box; }
+:where(html) { -webkit-text-size-adjust: 100%; }
+:where(body) {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color: #222;
+  background: #f4f4f5;
+  line-height: 1.45;
+}
+:where(#tv-escena) { display: block; width: 100%; max-width: 100%; overflow-x: hidden; }
+:where(.tv-puertas) { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; padding: 0 16px; }
+:where(.tv-puerta) {
+  font: inherit; color: inherit; cursor: pointer;
+  min-width: 0; min-height: 44px; padding: 0; margin: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+:where(.tv-puerta[data-estado="bloqueada"]) { cursor: not-allowed; }
+:where(.tv-puerta:focus-visible), :where(.tv-cerrar:focus-visible), :where(.tv-boton:focus-visible) {
+  outline: 3px solid #1a73e8; outline-offset: 3px;
+}
+.tv-cuenta[hidden] { display: none !important; }
+
+/* Capa de efectos (alAbrir) */
+.tv-capa { position: fixed; inset: 0; pointer-events: none; z-index: 50; overflow: hidden; }
+
+/* Ventana de la sorpresa */
+.tv-modal {
+  position: fixed; inset: 0; z-index: 100;
+  display: none; align-items: center; justify-content: center;
+  padding: 16px;
+}
+.tv-modal.on { display: flex; }
+:where(.tv-modal) { background: rgba(20, 20, 25, .55); }
+:where(.tv-tarjeta) {
+  position: relative; width: 100%; max-width: 420px;
+  max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); overflow: auto;
+  background: #fff; color: #222; border-radius: 16px; padding: 24px 20px 20px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.25); text-align: center;
+}
+:where(.tv-tarjeta):focus { outline: none; }
+:where(.tv-dia) { margin: 0 0 12px; font-size: 1.4rem; }
+:where(.tv-contenido) { margin: 0 0 16px; }
+:where(.tv-msg) { margin: 0; font-size: 1.1rem; }
+:where(.tv-foto) { margin: 0; }
+:where(.tv-foto img) { display: block; width: 100%; height: auto; border-radius: 10px; }
+:where(.tv-foto figcaption) { margin-top: 8px; font-size: .95rem; }
+:where(.tv-vale) { border: 2px dashed #999; border-radius: 12px; padding: 18px 12px; }
+:where(.tv-vale-por) { font-size: .9rem; text-transform: uppercase; letter-spacing: .12em; }
+:where(.tv-vale-que) { font-size: 1.5rem; font-weight: 700; margin: 4px 0; }
+:where(.tv-vale-nota), :where(.tv-regalo-nota) { font-size: .85rem; opacity: .8; margin: 6px 0 0; }
+:where(.tv-cancion-titulo) { font-size: 1.25rem; font-weight: 700; margin: 0 0 12px; }
+:where(.tv-cancion-nota) { font-size: .95rem; margin: 0 0 14px; }
+:where(.tv-regalo-texto) { font-size: 1.2rem; font-weight: 700; margin: 0; }
+:where(.tv-firma) { margin: 0 0 16px; font-style: italic; opacity: .85; }
+/* Saltos de línea del editor y palabras largas (risas, enlaces) sin desbordar la tarjeta */
+:where(.tv-msg, .tv-vale-nota, .tv-regalo-nota, .tv-cancion-nota, .tv-foto figcaption, .tv-regalo-texto) { white-space: pre-line; }
+:where(.tv-tarjeta), :where(.tv-para) { overflow-wrap: anywhere; }
+:where(.tv-boton), :where(.tv-cerrar) {
+  display: inline-block; font: inherit; font-weight: 600; cursor: pointer;
+  min-height: 44px; padding: 10px 22px; border-radius: 999px;
+  border: 1px solid #333; background: #222; color: #fff; text-decoration: none;
+}
+:where(.tv-cerrar) { background: #fff; color: #222; }
+
+/* Aviso corto */
+:where(.tv-toast) {
+  position: fixed; left: 50%; bottom: 76px; z-index: 110;
+  transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+  max-width: calc(100% - 32px); width: max-content;
+  background: #222; color: #fff; padding: 10px 16px; border-radius: 10px;
+  font-size: .95rem; text-align: center; box-shadow: 0 6px 20px rgba(0,0,0,.25);
+  transition: opacity .2s, transform .2s;
+}
+:where(.tv-toast.on) { opacity: 1; transform: translate(-50%, 0); }
+body.tv-modal-abierto { overflow: hidden; }
+
+/* Barra de prueba (solo en la demo). Ids para que ningún estilo la toque. */
+#tv-barra {
+  position: fixed; right: 12px; bottom: 12px; z-index: 90;
+  font: 14px/1.3 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color: #222; text-align: left; letter-spacing: normal; text-transform: none;
+  max-width: calc(100% - 24px);
+}
+#tv-barra[hidden] { display: none; }
+#tv-barra #tv-barra-abrir {
+  all: unset; box-sizing: border-box; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: 40px; padding: 8px 14px; border-radius: 999px;
+  background: #fff; color: #222; border: 1px solid #d4d4d8;
+  box-shadow: 0 4px 14px rgba(0,0,0,.18); font: 600 14px/1 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  float: right;
+}
+#tv-barra #tv-barra-abrir:focus-visible, #tv-barra button:focus-visible, #tv-barra select:focus-visible, #tv-barra input:focus-visible {
+  outline: 2px solid #1a73e8; outline-offset: 2px;
+}
+#tv-barra #tv-barra-panel {
+  clear: both; margin-bottom: 8px; width: 340px; max-width: 100%;
+  background: #fff; border: 1px solid #d4d4d8; border-radius: 14px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.2); padding: 12px;
+}
+#tv-barra.cerrada #tv-barra-panel { display: none; }
+#tv-barra .tvb-titulo { margin: 0 0 8px; font-size: 12px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: .06em; }
+#tv-barra .tvb-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 10px; }
+#tv-barra .tvb-chip {
+  all: unset; box-sizing: border-box; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 5px;
+  min-height: 34px; padding: 6px 10px; border-radius: 999px;
+  border: 1px solid #d4d4d8; background: #fafafa; color: #222;
+  font: 500 13px/1 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+#tv-barra .tvb-chip[aria-pressed="true"] { border-color: var(--tvb-color, #222); background: #fff; box-shadow: inset 0 0 0 1px var(--tvb-color, #222); font-weight: 700; }
+#tv-barra .tvb-fila { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+#tv-barra label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font: 400 13px/1.2 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color: #222; }
+#tv-barra input[type="checkbox"] { width: 18px; height: 18px; margin: 0; accent-color: #222; }
+#tv-barra select {
+  font: 400 13px/1.2 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color: #222;
+  min-height: 32px; padding: 4px 6px; border: 1px solid #d4d4d8; border-radius: 8px; background: #fff;
+}
+#tv-barra .tvb-reiniciar {
+  all: unset; box-sizing: border-box; cursor: pointer; margin-left: auto;
+  min-height: 32px; padding: 6px 12px; border-radius: 8px; border: 1px solid #d4d4d8; background: #fff; color: #b42318;
+  font: 600 13px/1.2 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+#tv-barra .tvb-nota { margin: 8px 0 0; font-size: 12px; color: #71717a; }
+@media (min-width: 720px) {
+  #tv-barra { right: 16px; bottom: 16px; }
+}
+
+/* Pantalla de espera y de avisos del calendario personalizado (neutra, igual para todos los estilos) */
+#tv-estado {
+  position: fixed; inset: 0; z-index: 120;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px 16px; overflow-y: auto;
+  background: linear-gradient(160deg, #fdf0f5 0%, #f6f4f8 50%, #eef3fb 100%);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color: #27272a; text-align: center; letter-spacing: normal; text-transform: none;
+}
+#tv-estado[hidden] { display: none; }
+#tv-estado .tve-caja {
+  width: 100%; max-width: 380px; margin: auto;
+  background: #fff; border-radius: 20px; padding: 32px 24px 28px;
+  box-shadow: 0 10px 36px rgba(60, 40, 80, .12);
+}
+#tv-estado .tve-icono { font-size: 44px; line-height: 1; margin: 0 0 14px; }
+#tv-estado .tve-icono:empty { display: none; }
+#tv-estado .tve-spinner {
+  width: 40px; height: 40px; margin: 4px auto 18px; border-radius: 50%;
+  border: 4px solid #f1d5e0; border-top-color: #d6336c;
+  animation: tve-girar .9s linear infinite;
+}
+#tv-estado .tve-spinner[hidden] { display: none; }
+#tv-estado .tve-titulo { margin: 0; font-size: 1.25rem; font-weight: 700; color: #18181b; }
+#tv-estado .tve-texto { margin: 10px 0 0; color: #52525b; }
+#tv-estado .tve-texto:empty { display: none; }
+#tv-estado .tve-boton {
+  all: unset; box-sizing: border-box; cursor: pointer; margin-top: 20px;
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 44px; padding: 10px 24px; border-radius: 999px;
+  background: #d6336c; color: #fff; font: 600 15px/1 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+#tv-estado .tve-boton[hidden] { display: none; }
+#tv-estado .tve-boton:focus-visible { outline: 3px solid #1a73e8; outline-offset: 3px; }
+@keyframes tve-girar { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  #tv-estado .tve-spinner { animation-duration: 2.4s; }
+}
+</style>
+<style id="tv-css-tema"></style>
+</head>
+<body class="tema-kawaii">
+<main id="tv-escena" aria-live="off"></main>
+<div class="tv-capa" aria-hidden="true"></div>
+<div class="tv-modal" aria-hidden="true">
+  <div class="tv-tarjeta" role="dialog" aria-modal="true" aria-labelledby="tv-dia" tabindex="-1">
+    <h2 class="tv-dia" id="tv-dia"></h2>
+    <div class="tv-contenido"></div>
+    <p class="tv-firma"></p>
+    <button type="button" class="tv-cerrar">Cerrar</button>
+  </div>
+</div>
+<div class="tv-toast" role="status" aria-live="polite"></div>
+<div id="tv-estado" role="status" aria-live="polite" hidden>
+  <div class="tve-caja">
+    <div class="tve-icono" aria-hidden="true"></div>
+    <div class="tve-spinner" aria-hidden="true" hidden></div>
+    <h1 class="tve-titulo"></h1>
+    <p class="tve-texto"></p>
+    <button type="button" class="tve-boton" hidden>Intentar otra vez</button>
+  </div>
+</div>
+<div id="tv-barra" class="tv-barra cerrada" role="region" aria-label="Opciones de prueba">
+  <div id="tv-barra-panel">
+    <p class="tvb-titulo">Estilo</p>
+    <div class="tvb-chips" id="tvb-chips"></div>
+    <div class="tvb-fila">
+      <label><input type="checkbox" id="tvb-prueba"> Abrir todas (prueba)</label>
+      <label>Simular día
+        <select id="tvb-dia"></select>
+      </label>
+      <button type="button" class="tvb-reiniciar" id="tvb-reiniciar">Reiniciar</button>
+    </div>
+    <p class="tvb-nota">Vista de prueba: esta barra no aparece en el calendario que se entrega.</p>
+  </div>
+  <button type="button" id="tv-barra-abrir" aria-expanded="false" aria-controls="tv-barra-panel">⚙️ <span id="tvb-resumen">Demo</span></button>
+</div>
+
+<script src="temas/kawaii.js"></script>
+<script src="temas/magico.js"></script>
+<script src="temas/glam.js"></script>
+<script src="temas/chocolateria.js"></script>
+<script src="temas/bloques.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- Contenido de la demo ---------- */
+  var PARA = "Marina";
+  var DE = "David";
+
+  function svgUri(svg) {
+    return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+  }
+  function lienzo(fondo, dibujo) {
+    return svgUri('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">' +
+      '<rect width="400" height="300" fill="' + fondo + '"/>' + dibujo + '</svg>');
+  }
+  var FOTOS = {
+    atardecer: lienzo("#ffd6a5",
+      '<defs><linearGradient id="c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff9a8b"/><stop offset=".6" stop-color="#ffcf8a"/><stop offset="1" stop-color="#ffe9c7"/></linearGradient></defs>' +
+      '<rect width="400" height="190" fill="url(#c)"/><circle cx="200" cy="185" r="58" fill="#ff7b54"/>' +
+      '<rect y="185" width="400" height="115" fill="#4f8fbf"/><path d="M0 215 Q100 205 200 215 T400 215" stroke="#9fd0f0" stroke-width="4" fill="none"/>' +
+      '<path d="M40 250 Q140 240 240 250 T440 250" stroke="#9fd0f0" stroke-width="3" fill="none" opacity=".7"/>' +
+      '<circle cx="178" cy="262" r="9" fill="#2d2d3a"/><rect x="171" y="270" width="14" height="24" rx="6" fill="#2d2d3a"/>' +
+      '<circle cx="216" cy="260" r="9" fill="#2d2d3a"/><rect x="209" y="268" width="14" height="26" rx="6" fill="#2d2d3a"/>' +
+      '<path d="M185 278 L209 278" stroke="#2d2d3a" stroke-width="4" stroke-linecap="round"/>'),
+    cafe: lienzo("#f3e3d3",
+      '<rect y="200" width="400" height="100" fill="#c89f7a"/>' +
+      '<g transform="translate(110 120)"><path d="M0 0 h80 v60 a30 30 0 0 1 -30 30 h-20 a30 30 0 0 1 -30 -30z" fill="#fff"/><path d="M80 15 a18 18 0 0 1 0 36" stroke="#fff" stroke-width="9" fill="none"/><ellipse cx="40" cy="4" rx="38" ry="6" fill="#6b3e26"/></g>' +
+      '<g transform="translate(220 120)"><path d="M0 0 h80 v60 a30 30 0 0 1 -30 30 h-20 a30 30 0 0 1 -30 -30z" fill="#ffd1dc"/><path d="M80 15 a18 18 0 0 1 0 36" stroke="#ffd1dc" stroke-width="9" fill="none"/><ellipse cx="40" cy="4" rx="38" ry="6" fill="#6b3e26"/></g>' +
+      '<path d="M140 100 q-10 -20 0 -40 M160 100 q10 -20 0 -40 M250 100 q-10 -20 0 -40 M270 100 q10 -20 0 -40" stroke="#a88" stroke-width="4" fill="none" stroke-linecap="round" opacity=".6"/>' +
+      '<path d="M200 70 c-10 -14 -30 -4 -20 10 l20 18 l20 -18 c10 -14 -10 -24 -20 -10z" fill="#e8577d"/>'),
+    montana: lienzo("#cfe8ff",
+      '<circle cx="320" cy="70" r="30" fill="#fff4b0"/>' +
+      '<path d="M0 240 L110 90 L190 190 L250 120 L400 260 L400 300 L0 300z" fill="#6f8fa8"/>' +
+      '<path d="M110 90 L135 124 L120 118 L100 128 L88 120z M250 120 L272 140 L256 138 L240 146 L234 138z" fill="#fff"/>' +
+      '<path d="M0 270 Q120 220 240 260 T400 250 V300 H0z" fill="#5d9c6b"/>' +
+      '<path d="M60 250 l12 -30 l12 30z M300 262 l12 -32 l12 32z M330 266 l10 -26 l10 26z" fill="#2f6b45"/>'),
+    estrellas: lienzo("#1d2350",
+      '<path d="M0 240 Q200 200 400 240 V300 H0z" fill="#11163a"/>' +
+      '<circle cx="300" cy="70" r="26" fill="#f6f1c7"/><circle cx="312" cy="62" r="24" fill="#1d2350"/>' +
+      '<g fill="#fff"><circle cx="40" cy="40" r="2"/><circle cx="90" cy="90" r="1.6"/><circle cx="140" cy="30" r="2.2"/><circle cx="190" cy="80" r="1.4"/><circle cx="230" cy="40" r="1.8"/><circle cx="360" cy="140" r="1.6"/><circle cx="60" cy="150" r="1.4"/><circle cx="120" cy="170" r="2"/><circle cx="250" cy="150" r="1.6"/><circle cx="380" cy="30" r="1.8"/></g>' +
+      '<path d="M60 60 l70 40" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".7"/>' +
+      '<circle cx="180" cy="236" r="8" fill="#0a0d26"/><circle cx="210" cy="236" r="8" fill="#0a0d26"/>'),
+    flores: lienzo("#e9f7ef",
+      '<g stroke="#4f9a64" stroke-width="5" fill="none"><path d="M200 290 V160"/><path d="M200 290 Q170 220 140 180"/><path d="M200 290 Q235 220 265 175"/></g>' +
+      '<g transform="translate(200 150)" fill="#ff8fab"><circle cx="0" cy="-22" r="16"/><circle cx="21" cy="-7" r="16"/><circle cx="13" cy="18" r="16"/><circle cx="-13" cy="18" r="16"/><circle cx="-21" cy="-7" r="16"/><circle r="12" fill="#ffd166"/></g>' +
+      '<g transform="translate(138 170)" fill="#b8a1ff"><circle cx="0" cy="-15" r="11"/><circle cx="14" cy="-5" r="11"/><circle cx="9" cy="12" r="11"/><circle cx="-9" cy="12" r="11"/><circle cx="-14" cy="-5" r="11"/><circle r="8" fill="#fff3b0"/></g>' +
+      '<g transform="translate(266 166)" fill="#ffb37a"><circle cx="0" cy="-15" r="11"/><circle cx="14" cy="-5" r="11"/><circle cx="9" cy="12" r="11"/><circle cx="-9" cy="12" r="11"/><circle cx="-14" cy="-5" r="11"/><circle r="8" fill="#fff3b0"/></g>' +
+      '<path d="M170 290 h60 l-8 -40 h-44z" fill="#d98e6a"/>'),
+    ciudad: lienzo("#2b2d5c",
+      '<g fill="#3f4380"><rect x="10" y="150" width="60" height="150"/><rect x="80" y="110" width="50" height="190"/><rect x="140" y="170" width="70" height="130"/><rect x="220" y="90" width="55" height="210"/><rect x="285" y="140" width="45" height="160"/><rect x="340" y="120" width="60" height="180"/></g>' +
+      '<g fill="#ffd96a"><rect x="22" y="165" width="10" height="12"/><rect x="45" y="190" width="10" height="12"/><rect x="92" y="125" width="10" height="12"/><rect x="110" y="160" width="10" height="12"/><rect x="155" y="185" width="10" height="12"/><rect x="185" y="210" width="10" height="12"/><rect x="232" y="105" width="10" height="12"/><rect x="252" y="140" width="10" height="12"/><rect x="295" y="160" width="10" height="12"/><rect x="355" y="135" width="10" height="12"/><rect x="375" y="175" width="10" height="12"/></g>' +
+      '<g stroke="#ffe7a3" stroke-width="2"><path d="M0 40 Q100 70 200 40 T400 40" fill="none"/></g>' +
+      '<g fill="#fff7c2"><circle cx="40" cy="48" r="5"/><circle cx="100" cy="58" r="5"/><circle cx="160" cy="48" r="5"/><circle cx="240" cy="42" r="5"/><circle cx="300" cy="56" r="5"/><circle cx="360" cy="46" r="5"/></g>')
+  };
+
+  var DIAS = [
+    null,
+    { tipo: "mensaje", texto: "Empieza diciembre y empiezo yo: 24 días para recordarte lo mucho que te quiero. Hoy va por tu risa, que me arregla cualquier día." },
+    { tipo: "foto", img: FOTOS.atardecer, alt: "Ilustración de dos personas mirando el atardecer frente al mar", pie: "Nuestro primer atardecer juntos" },
+    { tipo: "mensaje", texto: "Si tuviera que elegir otra vez, te elegiría en el primer segundo. Y en el segundo. Y en todos." },
+    { tipo: "vale", que: "un abrazo", nota: "De los largos. Canjeable cuando quieras, sin fecha de vencimiento." },
+    { tipo: "mensaje", texto: "Gracias por hacer que lo normal se sienta especial: el pan de la mañana, el camino a casa, el «¿ya llegaste?»." },
+    { tipo: "foto", img: FOTOS.cafe, alt: "Ilustración de dos tazas de café sobre una mesa con un corazón encima", pie: "El café de los domingos" },
+    { tipo: "cancion", titulo: "Nuestra canción", nota: "Ponla fuerte y piensa en mí un ratito." },
+    { tipo: "mensaje", texto: "Me encanta cómo te brillan los ojos cuando hablas de lo que te gusta. No dejes nunca de contarme." },
+    { tipo: "vale", que: "una cita", nota: "Tú eliges el lugar; yo me encargo del resto." },
+    { tipo: "foto", img: FOTOS.montana, alt: "Ilustración de montañas nevadas con un lago y un sol amarillo", pie: "Ese viaje a la montaña" },
+    { tipo: "mensaje", texto: "Contigo aprendí que la casa no es un lugar: es una persona. Y eres tú." },
+    { tipo: "regalo", texto: "Hoy te espera un regalo de verdad 🎁", nota: "Pídemelo cuando me veas: ya lo tengo guardado." },
+    { tipo: "mensaje", texto: "Ya vamos por la mitad. Ojalá cada puerta te saque una sonrisa como la que tú me sacas a mí." },
+    { tipo: "vale", que: "un desayuno en la cama", nota: "Con jugo, panqueques y cero apuro." },
+    { tipo: "foto", img: FOTOS.estrellas, alt: "Ilustración de un cielo nocturno con luna y estrellas fugaces", pie: "Noche de estrellas" },
+    { tipo: "mensaje", texto: "Tus abrazos tienen superpoderes: curan el cansancio, el frío y los lunes." },
+    { tipo: "cancion", titulo: "Nuestra canción", nota: "La que siempre cantamos desafinando en el carro." },
+    { tipo: "foto", img: FOTOS.flores, alt: "Ilustración de tres flores de colores en una maceta", pie: "Las flores que te gustan" },
+    { tipo: "vale", que: "una peli juntos", nota: "Con canchita y mantita. La eliges tú (esta vez sí)." },
+    { tipo: "mensaje", texto: "Admiro tu fuerza, tu paciencia y tu manera de cuidar a todos. Este año también fuiste increíble." },
+    { tipo: "foto", img: FOTOS.ciudad, alt: "Ilustración de una ciudad de noche con edificios iluminados y guirnaldas", pie: "Paseo por la ciudad" },
+    { tipo: "mensaje", texto: "Faltan poquitos días y ya te tengo una lista de planes para el año que viene. Todos contigo." },
+    { tipo: "regalo", texto: "Hoy te espera un regalo de verdad 🎁", nota: "Búscalo donde siempre dejamos las cosas importantes." },
+    { tipo: "mensaje", final: true, texto: "Llegamos a la última puerta. Gracias por abrir cada una conmigo. Mi mejor regalo no está en este calendario: eres tú. ¡Feliz Navidad, " + PARA + "! 🎄❤️" }
+  ];
+
+  /* ---------- Utilidades ---------- */
+  var ORDEN_TEMAS = ["kawaii", "magico", "glam", "chocolateria", "bloques"];
+
+  /* Modo: "demo" (sin ?c= ni ?vista=1), "personal" (?c=<id>, archivo cifrado) o "vista" (vista previa del editor) */
+  var params = new URLSearchParams(location.search);
+  var MODO = params.get("vista") === "1" ? "vista" : (params.has("c") ? "personal" : "demo");
+  var CAL_ID = MODO === "personal" ? (params.get("c") || "") : "";
+  /* Clave de puertas abiertas: la demo tiene la suya; el personalizado, una por calendario; la vista previa no guarda nada */
+  var CLAVE = MODO === "demo" ? "tv-abiertas-demo" : null;
+  var reducido = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : { matches: false };
+
+  function $(sel, raiz) { return (raiz || document).querySelector(sel); }
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function leerAbiertas() {
+    if (!CLAVE) return [];
+    try {
+      var v = JSON.parse(localStorage.getItem(CLAVE) || "[]");
+      return Array.isArray(v) ? v.filter(function (n) { return n >= 1 && n <= 24; }) : [];
+    } catch (e) { return []; }
+  }
+  var abiertas = leerAbiertas();
+  function guardarAbiertas() {
+    if (!CLAVE) return;
+    try { localStorage.setItem(CLAVE, JSON.stringify(abiertas)); } catch (e) { /* sin almacenamiento */ }
+  }
+
+  /* Fecha en Lima */
+  function fechaLima() {
+    try {
+      var partes = new Intl.DateTimeFormat("en-US", { timeZone: "America/Lima", year: "numeric", month: "numeric", day: "numeric" }).formatToParts(new Date());
+      var r = {};
+      partes.forEach(function (p) { if (p.type !== "literal") r[p.type] = parseInt(p.value, 10); });
+      if (r.year && r.month && r.day) return { y: r.year, m: r.month, d: r.day };
+    } catch (e) { /* sin Intl */ }
+    var h = new Date(Date.now() - 5 * 3600 * 1000);
+    return { y: h.getUTCFullYear(), m: h.getUTCMonth() + 1, d: h.getUTCDate() };
+  }
+
+  /* ---------- Parámetros ---------- */
+  var estado = {
+    estilo: MODO === "demo" ? (params.get("estilo") || "kawaii") : "kawaii",
+    /* En la vista previa todas las puertas se pueden abrir */
+    prueba: MODO === "vista" || params.get("prueba") === "1",
+    simular: (function () { var n = parseInt(params.get("dia"), 10); return n >= 1 && n <= 24 ? n : 0; })(),
+    /* Demo: barra salvo ?barra=0. Personalizado: solo con ?barra=1 (revisión de David). Vista previa: nunca. */
+    barra: MODO === "demo" ? params.get("barra") !== "0" : (MODO === "personal" && params.get("barra") === "1")
+  };
+
+  function actualizarURL() {
+    if (MODO === "vista") return;
+    try {
+      var p = new URLSearchParams(location.search);
+      if (MODO === "demo") p.set("estilo", estado.estilo);
+      if (estado.prueba) p.set("prueba", "1"); else p.delete("prueba");
+      if (estado.simular) p.set("dia", String(estado.simular)); else p.delete("dia");
+      var q = p.toString();
+      history.replaceState(null, "", location.pathname + (q ? "?" + q : "") + location.hash);
+    } catch (e) { /* file:// puede no dejar */ }
+  }
+
+  /* Fecha efectiva: { antesDeDiciembre, diasFaltan, hoy (0 si no es diciembre del año) } */
+  /* Año del calendario: antes del 1 de diciembre de ANIO hay cuenta regresiva;
+     del 1 al 24 se abre una por día; después del 24 de diciembre de ANIO, todas disponibles. */
+  var ANIO = 2026;
+  function calendario() {
+    if (estado.simular) return { hoy: estado.simular, antes: false, faltan: 0 };
+    var f = fechaLima();
+    var hoyUTC = Date.UTC(f.y, f.m - 1, f.d), dic1 = Date.UTC(ANIO, 11, 1), dic24 = Date.UTC(ANIO, 11, 24);
+    if (hoyUTC < dic1) return { hoy: 0, antes: true, faltan: Math.round((dic1 - hoyUTC) / 86400000) };
+    if (hoyUTC <= dic24) return { hoy: f.d, desde: f.d, antes: false, faltan: 0 };
+    return { hoy: 0, pasado: true, desde: 24, antes: false, faltan: 0 };
+  }
+  function estadoDe(n) {
+    if (abiertas.indexOf(n) >= 0) return "abierta";
+    var c = calendario();
+    var dia = estado.simular ? estado.simular : (c.antes ? 0 : c.desde);
+    if (c.hoy === n) return "hoy";
+    if (estado.prueba) return "disponible";
+    if (dia >= n) return "disponible";
+    return "bloqueada";
+  }
+  var ESTADO_TEXTO = { bloqueada: "bloqueada", hoy: "se abre hoy", disponible: "disponible", abierta: "abierta" };
+
+  /* ---------- Temas ---------- */
+  var BASICO = {
+    id: "basico", nombre: "Básico", emoji: "🎄", descripcion: "Estilo de respaldo", fuentes: "", color: "#2f6b45",
+    css: "body.tema-basico .tv-titulo{text-align:center;margin:24px 16px 4px;font-size:1.6rem}" +
+      "body.tema-basico .tv-para,body.tema-basico .tv-cuenta{text-align:center;margin:0 16px 12px}" +
+      "body.tema-basico .tv-puertas{padding:0 16px 96px;max-width:560px;margin:0 auto}" +
+      "body.tema-basico .tv-puerta{aspect-ratio:1;border:1px solid #ccc;border-radius:10px;background:#fff;font-size:1.3rem;font-weight:700}" +
+      "body.tema-basico .tv-puerta[data-estado=hoy]{border:2px solid #2f6b45}" +
+      "body.tema-basico .tv-puerta[data-estado=abierta]{background:#e9f5ec}" +
+      "body.tema-basico .tv-puerta[data-estado=bloqueada]{opacity:.55}",
+    orden: null,
+    escena: function () { return '<h1 class="tv-titulo">Calendario de adviento</h1><p class="tv-para"></p><p class="tv-cuenta"></p><div class="tv-puertas"></div>'; },
+    puerta: function (n) { return "<span>" + n + "</span>"; },
+    alAbrir: function () { return Promise.resolve(); }
+  };
+
+  function temasCargados() {
+    var lista = (window.TEMAS_VIRTUAL || []).filter(function (t) {
+      return t && typeof t.id === "string" && typeof t.escena === "function" && typeof t.puerta === "function";
+    });
+    lista.sort(function (a, b) {
+      var ia = ORDEN_TEMAS.indexOf(a.id), ib = ORDEN_TEMAS.indexOf(b.id);
+      return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+    });
+    var vistos = {};
+    return lista.filter(function (t) { if (vistos[t.id]) return false; vistos[t.id] = true; return true; });
+  }
+  var TEMAS = temasCargados();
+  function buscarTema(id) {
+    for (var i = 0; i < TEMAS.length; i++) if (TEMAS[i].id === id) return TEMAS[i];
+    return null;
+  }
+  var tema = null;
+
+  function cargarFuente(t) {
+    if (!t.fuentes) return;
+    var id = "tv-fuente-" + t.id;
+    if (document.getElementById(id)) return;
+    var l = document.createElement("link");
+    l.id = id; l.rel = "stylesheet"; l.href = t.fuentes;
+    document.head.appendChild(l);
+  }
+  function ordenDe(t) {
+    var o = t.orden;
+    if (Array.isArray(o) && o.length === 24) {
+      var copia = o.map(Number).slice().sort(function (a, b) { return a - b; });
+      var ok = copia.every(function (v, i) { return v === i + 1; });
+      if (ok) return o.map(Number);
+    }
+    var r = []; for (var i = 1; i <= 24; i++) r.push(i); return r;
+  }
+
+  var escenaEl = document.getElementById("tv-escena");
+  var capa = $(".tv-capa");
+
+  /* Datos del día que reciben los temas (3.er argumento de puerta() y 4.º de alAbrir()) */
+  function infoDia(n) {
+    var d = DIAS[n] || {};
+    return { tipo: d.tipo || "mensaje", final: !!d.final };
+  }
+  function puertaHTML(n, est) {
+    try { var h = tema.puerta(n, est, infoDia(n)); if (h != null) return String(h); } catch (e) { console.error(e); }
+    return "<span>" + n + "</span>";
+  }
+  function pintarPuerta(btn, siCambia) {
+    var n = parseInt(btn.getAttribute("data-n"), 10);
+    var est = estadoDe(n);
+    if (siCambia && btn.getAttribute("data-estado") === est) return;
+    btn.setAttribute("data-estado", est);
+    btn.setAttribute("aria-label", "Día " + n + ", " + ESTADO_TEXTO[est]);
+    btn.setAttribute("aria-disabled", est === "bloqueada" ? "true" : "false");
+    btn.innerHTML = puertaHTML(n, est);
+  }
+
+  function pintarCuenta() {
+    var el = $(".tv-cuenta", escenaEl);
+    if (!el) return;
+    var c = calendario();
+    if (c.antes && !estado.prueba) {
+      el.textContent = c.faltan === 1 ? "¡Mañana se abre la primera puerta! 🎄" : "Faltan " + c.faltan + " días para abrir la primera puerta 🎄";
+      el.hidden = false;
+    } else {
+      el.textContent = "";
+      el.hidden = true;
+    }
+  }
+
+  function pintarTodo() {
+    var html = "";
+    try { html = String(tema.escena() || ""); } catch (e) { console.error(e); }
+    escenaEl.innerHTML = html;
+    var cont = $(".tv-puertas", escenaEl);
+    if (!cont) { cont = document.createElement("div"); cont.className = "tv-puertas"; escenaEl.appendChild(cont); }
+    var para = $(".tv-para", escenaEl);
+    if (!para) { para = document.createElement("p"); para.className = "tv-para"; escenaEl.insertBefore(para, escenaEl.firstChild); }
+    para.textContent = PARA ? "Para " + PARA : "";
+    para.style.display = PARA ? "" : "none";
+    cont.setAttribute("role", "group");
+    cont.setAttribute("aria-label", "Puertas del calendario");
+    cont.innerHTML = "";
+    ordenDe(tema).forEach(function (n, i) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "tv-puerta";
+      b.setAttribute("data-n", String(n));
+      b.style.setProperty("--tv-i", String(i));
+      b.style.setProperty("--tv-n", String(n));
+      pintarPuerta(b);
+      cont.appendChild(b);
+    });
+    pintarCuenta();
+  }
+  function repintarPuertas() {
+    Array.prototype.forEach.call(escenaEl.querySelectorAll(".tv-puerta"), function (b) { pintarPuerta(b, true); });
+    pintarCuenta();
+  }
+
+  function aplicarTema(id) {
+    var t = buscarTema(id) || buscarTema("kawaii") || TEMAS[0] || BASICO;
+    tema = t;
+    estado.estilo = t.id;
+    var clases = document.body.className.split(/\s+/).filter(function (c) { return c && c.indexOf("tema-") !== 0; });
+    clases.push("tema-" + t.id);
+    document.body.className = clases.join(" ");
+    document.getElementById("tv-css-tema").textContent = t.css || "";
+    cargarFuente(t);
+    Array.prototype.forEach.call(document.querySelectorAll('link[id^="tv-fuente-"]'), function (l) {
+      if (l.id !== "tv-fuente-" + t.id) l.parentNode.removeChild(l);
+    });
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta && t.color) meta.setAttribute("content", t.color);
+    capa.innerHTML = "";
+    pintarTodo();
+    pintarBarra();
+  }
+
+  /* ---------- Aviso ---------- */
+  var toastEl = $(".tv-toast"), toastT = 0;
+  function aviso(txt) {
+    toastEl.textContent = txt;
+    toastEl.classList.add("on");
+    clearTimeout(toastT);
+    toastT = setTimeout(function () { toastEl.classList.remove("on"); }, 2600);
+  }
+
+  /* ---------- Ventana ---------- */
+  var modal = $(".tv-modal"), tarjeta = $(".tv-tarjeta"), contenido = $(".tv-contenido"),
+      diaEl = $(".tv-dia"), firmaEl = $(".tv-firma"), cerrarBtn = $(".tv-cerrar");
+  var volverA = null;
+
+  /* El contenido se arma con nodos y textContent: ningún texto del calendario se interpreta como HTML */
+  function nodo(etiqueta, clase, texto) {
+    var el = document.createElement(etiqueta);
+    if (clase) el.className = clase;
+    if (texto != null) el.textContent = texto;
+    return el;
+  }
+  function contenidoNodo(n) {
+    var d = DIAS[n] || { tipo: "mensaje", texto: "" };
+    var caja;
+    switch (d.tipo) {
+      case "foto":
+        caja = nodo("figure", "tv-foto");
+        var img = document.createElement("img");
+        img.src = d.img; img.alt = d.alt || ""; img.width = 400; img.height = 300;
+        caja.appendChild(img);
+        if (d.pie) caja.appendChild(nodo("figcaption", "", d.pie));
+        return caja;
+      case "vale":
+        caja = nodo("div", "tv-vale");
+        caja.appendChild(nodo("div", "tv-vale-por", "Vale por"));
+        caja.appendChild(nodo("div", "tv-vale-que", d.que));
+        if (d.nota) caja.appendChild(nodo("p", "tv-vale-nota", d.nota));
+        return caja;
+      case "cancion":
+        caja = nodo("div", "tv-cancion");
+        caja.appendChild(nodo("p", "tv-cancion-titulo", d.titulo));
+        if (d.nota) caja.appendChild(nodo("p", "tv-cancion-nota", d.nota));
+        if (d.url) {
+          var a = nodo("a", "tv-boton", "▶ Escuchar");
+          a.href = d.url; a.target = "_blank"; a.rel = "noopener noreferrer";
+          caja.appendChild(a);
+        } else if (MODO === "demo" || MODO === "vista") {
+          var b = nodo("a", "tv-boton", "▶ Escuchar");
+          b.href = "#"; b.setAttribute("data-accion", "cancion");
+          caja.appendChild(b);
+        } else if (!d.nota) {
+          caja.appendChild(nodo("p", "tv-cancion-nota", "Búscala y ponla fuerte 🎶"));
+        }
+        return caja;
+      case "regalo":
+        caja = nodo("div", "tv-regalo");
+        caja.appendChild(nodo("p", "tv-regalo-texto", d.texto));
+        if (d.nota) caja.appendChild(nodo("p", "tv-regalo-nota", d.nota));
+        return caja;
+      default:
+        return nodo("p", "tv-msg", d.texto);
+    }
+  }
+  function pintarContenido(n) {
+    contenido.textContent = "";
+    contenido.appendChild(contenidoNodo(n));
+  }
+  /* Mientras la tarjeta está abierta, lo de atrás no se recorre (ni con lector de pantalla) */
+  function ponerInert(si) {
+    ["tv-escena", "tv-barra"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      if (si) { el.setAttribute("inert", ""); el.inert = true; }
+      else { el.removeAttribute("inert"); el.inert = false; }
+    });
+  }
+  function abrirModal(n, desde) {
+    var d = DIAS[n];
+    volverA = desde || null;
+    diaEl.textContent = "Día " + n;
+    pintarContenido(n);
+    contenido.setAttribute("data-tipo", d.tipo);
+    modal.setAttribute("data-n", String(n));
+    modal.setAttribute("data-tipo", d.tipo);
+    modal.classList.toggle("tv-final", !!d.final);
+    firmaEl.textContent = DE ? "Con cariño, " + DE : "Con cariño";
+    modal.classList.add("on");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("tv-modal-abierto");
+    ponerInert(true);
+    setTimeout(function () { cerrarBtn.focus(); }, 0);
+  }
+  function cerrarModal() {
+    if (!modal.classList.contains("on")) return;
+    modal.classList.remove("on");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("tv-modal-abierto");
+    ponerInert(false);
+    if (volverA && document.body.contains(volverA)) volverA.focus();
+    else {
+      var n = modal.getAttribute("data-n");
+      var b = n && escenaEl.querySelector('.tv-puerta[data-n="' + n + '"]');
+      if (b) b.focus();
+    }
+    volverA = null;
+  }
+  cerrarBtn.addEventListener("click", cerrarModal);
+  modal.addEventListener("click", function (e) {
+    if (e.target === modal) cerrarModal();
+    var a = e.target.closest && e.target.closest('[data-accion="cancion"]');
+    if (a) { e.preventDefault(); aviso(MODO === "vista" ? "Falta el enlace de la canción" : "Aquí irá el enlace que elijas"); }
+  });
+  document.addEventListener("keydown", function (e) {
+    if (!modal.classList.contains("on")) return;
+    if (e.key === "Escape") { e.preventDefault(); cerrarModal(); return; }
+    if (e.key === "Tab") {
+      var f = Array.prototype.filter.call(tarjeta.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'), function (el) { return el.offsetParent !== null; });
+      if (!f.length) { e.preventDefault(); tarjeta.focus(); return; }
+      var primero = f[0], ultimo = f[f.length - 1];
+      if (!tarjeta.contains(document.activeElement)) { e.preventDefault(); primero.focus(); }
+      else if (e.shiftKey && document.activeElement === primero) { e.preventDefault(); ultimo.focus(); }
+      else if (!e.shiftKey && document.activeElement === ultimo) { e.preventDefault(); primero.focus(); }
+    }
+  });
+
+  /* ---------- Abrir puertas ---------- */
+  var ocupado = false;
+  function efecto(btn, n) {
+    if (reducido.matches || typeof tema.alAbrir !== "function") return Promise.resolve();
+    var p;
+    try { p = Promise.resolve(tema.alAbrir(btn, n, capa, infoDia(n))); } catch (e) { console.error(e); return Promise.resolve(); }
+    var tope = new Promise(function (res) { setTimeout(res, 1200); });
+    return Promise.race([p, tope]).catch(function (e) { console.error(e); });
+  }
+  escenaEl.addEventListener("click", function (e) {
+    var btn = e.target.closest && e.target.closest(".tv-puerta");
+    if (!btn || !escenaEl.contains(btn) || ocupado) return;
+    var n = parseInt(btn.getAttribute("data-n"), 10);
+    var est = estadoDe(n);
+    if (est === "bloqueada") { aviso("Se abre el " + n + " de diciembre 🔒"); return; }
+    if (est === "abierta") { abrirModal(n, btn); return; }
+    ocupado = true;
+    capa.innerHTML = "";
+    efecto(btn, n).then(function () {
+      if (abiertas.indexOf(n) < 0) abiertas.push(n);
+      guardarAbiertas();
+      pintarPuerta(btn);
+      ocupado = false;
+      abrirModal(n, btn);
+    });
+  });
+
+  /* ---------- Barra de prueba ---------- */
+  var barra = document.getElementById("tv-barra");
+  var barraBtn = document.getElementById("tv-barra-abrir");
+  var chips = document.getElementById("tvb-chips");
+  var chkPrueba = document.getElementById("tvb-prueba");
+  var selDia = document.getElementById("tvb-dia");
+
+  (function () {
+    var h = '<option value="0">Ninguno</option>';
+    for (var i = 1; i <= 24; i++) h += '<option value="' + i + '">' + i + " de diciembre</option>";
+    selDia.innerHTML = h;
+  })();
+  function pintarBarra() {
+    if (MODO !== "demo") {
+      /* Calendario personalizado: el estilo lo eligió quien lo regala; sin selector */
+      chips.style.display = "none";
+      var tit = barra.querySelector(".tvb-titulo"); if (tit) tit.style.display = "none";
+      var nota = barra.querySelector(".tvb-nota"); if (nota) nota.textContent = "Revisión: esta barra solo aparece con ?barra=1.";
+      chkPrueba.checked = estado.prueba;
+      selDia.value = String(estado.simular);
+      document.getElementById("tvb-resumen").textContent = "Revisión";
+      return;
+    }
+    var lista = TEMAS.length ? TEMAS : [BASICO];
+    chips.innerHTML = lista.map(function (t) {
+      return '<button type="button" class="tvb-chip" data-estilo="' + esc(t.id) + '" aria-pressed="' + (t.id === tema.id) + '" style="--tvb-color:' + esc(t.color || "#222") + '" title="' + esc(t.descripcion || "") + '">' +
+        '<span aria-hidden="true">' + esc(t.emoji || "") + "</span>" + esc(t.nombre || t.id) + "</button>";
+    }).join("");
+    chkPrueba.checked = estado.prueba;
+    selDia.value = String(estado.simular);
+    document.getElementById("tvb-resumen").textContent = (tema.emoji ? tema.emoji + " " : "") + (tema.nombre || "Demo");
+  }
+  function plegar(cerrada) {
+    barra.classList.toggle("cerrada", cerrada);
+    barraBtn.setAttribute("aria-expanded", cerrada ? "false" : "true");
+  }
+  barraBtn.addEventListener("click", function () { plegar(!barra.classList.contains("cerrada")); });
+  chips.addEventListener("click", function (e) {
+    var c = e.target.closest(".tvb-chip");
+    if (!c || ocupado) return;
+    cerrarModal();
+    aplicarTema(c.getAttribute("data-estilo"));
+    actualizarURL();
+    var nuevo = chips.querySelector('[data-estilo="' + estado.estilo + '"]');
+    if (nuevo) nuevo.focus();
+  });
+  chkPrueba.addEventListener("change", function () {
+    estado.prueba = chkPrueba.checked; actualizarURL(); repintarPuertas();
+  });
+  selDia.addEventListener("change", function () {
+    estado.simular = parseInt(selDia.value, 10) || 0; actualizarURL(); repintarPuertas();
+  });
+  document.getElementById("tvb-reiniciar").addEventListener("click", function () {
+    abiertas = []; guardarAbiertas(); repintarPuertas(); aviso("Listo: todas las puertas están cerradas otra vez");
+  });
+  if (!estado.barra) barra.hidden = true;
+  plegar(!(window.matchMedia && window.matchMedia("(min-width: 720px)").matches));
+
+  /* Otra pestaña o ventana abrió o reinició puertas */
+  window.addEventListener("storage", function (e) {
+    if (e.key === CLAVE) { abiertas = leerAbiertas(); repintarPuertas(); }
+  });
+
+  /* Medianoche en Lima: refrescar estados cada minuto */
+  setInterval(function () { if (!ocupado) repintarPuertas(); }, 60000);
+
+  /* Para depurar desde la consola (los temas NO deben usarlo: reciben el tipo del día como argumento) */
+  window.TV_MOTOR = { aplicarTema: function (id) { aplicarTema(id); actualizarURL(); }, estadoDe: estadoDe, dias: DIAS };
+
+  /* ---------- Calendario personalizado ---------- */
+  /* Días vacíos o inválidos: mensajes genéricos (índice 0 = día 1) */
+  var GENERICOS = [
+    "¡Empieza la cuenta regresiva! Que este diciembre venga lleno de momentos bonitos. 🎄",
+    "Hoy solo quería recordarte lo especial que eres.",
+    "Que hoy te pase algo que te haga sonreír sin razón. ✨",
+    "Gracias por ser como eres. El mundo es más bonito contigo.",
+    "Respira hondo, tómate un cafecito y regálate un rato para ti. ☕",
+    "Ojalá sepas cuánto alegras los días de quienes te quieren.",
+    "Una sonrisa tuya vale más que todas las luces de Navidad. 💡",
+    "Hoy toca abrazo, aunque sea a la distancia. 🤗",
+    "Eres de esas personas que hacen que todo valga la pena.",
+    "Que no te falten motivos para reír ni personas con quienes hacerlo.",
+    "Pequeño recordatorio: lo estás haciendo muy bien. 💪",
+    "Ya vamos por la mitad del camino. ¡Lo mejor está por venir!",
+    "Que la magia de estos días te encuentre en cada esquina. 🌟",
+    "Hoy es un buen día para hacer algo que te guste mucho.",
+    "Gracias por cada momento compartido este año. ❤️",
+    "Que tus deseos de Navidad empiecen a cumplirse desde hoy.",
+    "Eres un regalo para quienes tenemos la suerte de conocerte. 🎁",
+    "Pon tu canción favorita y baila un ratito. 🎶",
+    "Que todo el cariño que das te vuelva multiplicado.",
+    "Faltan poquitos días: disfruta cada uno. ⏳",
+    "Que la paz y la alegría de estos días se queden contigo todo el año.",
+    "Ya casi llega la Navidad. Gracias por estar. 🕯️",
+    "Mañana es Nochebuena: que tu casa se llene de abrazos y risas. 🏠",
+    "¡Feliz Navidad! Que este día esté lleno de amor, paz y alegría. 🎄❤️"
+  ];
+  var RE_FOTO = /^data:image\/(webp|jpeg|png|svg\+xml)[;,]/i;
+
+  function texto(v, max) {
+    if (typeof v !== "string") return "";
+    v = v.trim();
+    return v.length > (max || 2000) ? v.slice(0, max || 2000) : v;
+  }
+  function urlSegura(v) {
+    v = texto(v, 2000);
+    if (!/^https?:\/\//i.test(v)) return "";
+    try { var u = new URL(v); return (u.protocol === "http:" || u.protocol === "https:") ? u.href : ""; } catch (e) { return ""; }
+  }
+  function normalizarDia(d, n) {
+    var r = null;
+    if (d && typeof d === "object") {
+      switch (d.tipo) {
+        case "mensaje":
+          if (texto(d.texto)) r = { tipo: "mensaje", texto: texto(d.texto) };
+          break;
+        case "foto":
+          if (typeof d.foto === "string" && RE_FOTO.test(d.foto)) {
+            var pie = texto(d.pie, 300);
+            r = { tipo: "foto", img: d.foto, alt: pie || "Foto del día " + n, pie: pie };
+          }
+          break;
+        case "vale":
+          if (texto(d.que, 200)) r = { tipo: "vale", que: texto(d.que, 200), nota: texto(d.nota, 500) };
+          break;
+        case "cancion":
+          r = { tipo: "cancion", titulo: texto(d.titulo, 200) || "Nuestra canción", url: urlSegura(d.url), nota: texto(d.nota, 500) };
+          break;
+        case "regalo":
+          r = { tipo: "regalo", texto: texto(d.texto, 300) || "Hoy te espera un regalo de verdad 🎁", nota: texto(d.nota, 500) };
+          break;
+      }
+    }
+    if (!r) r = { tipo: "mensaje", texto: GENERICOS[n - 1] };
+    if (n === 24) r.final = true;
+    return r;
+  }
+  function normalizar(p) {
+    if (!p || typeof p !== "object" || Array.isArray(p)) throw new Error("formato");
+    var lista = Array.isArray(p.dias) ? p.dias : [];
+    var dias = [null];
+    for (var n = 1; n <= 24; n++) dias.push(normalizarDia(lista[n - 1], n));
+    var anio = Number(p.anio);
+    return {
+      estilo: ORDEN_TEMAS.indexOf(p.estilo) >= 0 ? p.estilo : "kawaii",
+      para: texto(p.para, 60),
+      de: texto(p.de, 60),
+      anio: (anio % 1 === 0 && anio >= 2020 && anio <= 2100) ? anio : fechaLima().y,
+      dias: dias
+    };
+  }
+  /* Pone en marcha un calendario ya validado (personalizado o vista previa) */
+  function usarCalendario(cal) {
+    DIAS = cal.dias;
+    PARA = cal.para;
+    DE = cal.de;
+    ANIO = cal.anio;
+    window.TV_MOTOR.dias = DIAS;
+    abiertas = leerAbiertas();
+    if (!tema || tema.id !== cal.estilo || !buscarTema(cal.estilo)) aplicarTema(cal.estilo);
+    else { pintarTodo(); pintarBarra(); }
+    /* Vista previa con la tarjeta abierta: actualizar lo que se ve */
+    if (modal.classList.contains("on")) {
+      var n = parseInt(modal.getAttribute("data-n"), 10);
+      if (DIAS[n]) {
+        pintarContenido(n);
+        contenido.setAttribute("data-tipo", DIAS[n].tipo);
+        modal.setAttribute("data-tipo", DIAS[n].tipo);
+        firmaEl.textContent = DE ? "Con cariño, " + DE : "Con cariño";
+      }
+    }
+  }
+
+  /* Pantalla de espera / avisos */
+  var estadoEl = document.getElementById("tv-estado");
+  var reintentarBtn = $(".tve-boton", estadoEl);
+  var AVISOS = {
+    cargando: { icono: "", spinner: true, titulo: "Preparando tu calendario…", texto: "" },
+    incompleto: { icono: "🔗", titulo: "Falta una parte del enlace", texto: "Este enlace está incompleto. Pídele a quien te lo regaló que te lo vuelva a enviar." },
+    noEncontrado: { icono: "🔍", titulo: "No encontramos este calendario", texto: "Revisa que el enlace esté completo. Si sigue sin abrir, pídele a quien te lo regaló que te lo vuelva a enviar." },
+    red: { icono: "📶", titulo: "No pudimos cargar tu calendario", texto: "Revisa tu conexión a internet e inténtalo otra vez.", reintentar: true },
+    descifrar: { icono: "🔒", titulo: "No se pudo abrir el calendario…", texto: "Es posible que el enlace se haya copiado incompleto. Pídele a quien te lo regaló que te lo vuelva a enviar." },
+    navegador: { icono: "🧭", titulo: "Tu navegador no puede abrirlo", texto: "Abre el enlace en Chrome, Safari o Edge actualizados." }
+  };
+  function mostrarEstado(clave) {
+    var a = AVISOS[clave];
+    $(".tve-icono", estadoEl).textContent = a.icono;
+    $(".tve-spinner", estadoEl).hidden = !a.spinner;
+    $(".tve-titulo", estadoEl).textContent = a.titulo;
+    $(".tve-texto", estadoEl).textContent = a.texto;
+    reintentarBtn.hidden = !a.reintentar;
+    estadoEl.setAttribute("data-estado", clave);
+    estadoEl.hidden = false;
+    escenaEl.setAttribute("inert", ""); escenaEl.inert = true;
+    if (a.reintentar) setTimeout(function () { reintentarBtn.focus(); }, 0);
+  }
+  function ocultarEstado() {
+    estadoEl.hidden = true;
+    escenaEl.removeAttribute("inert"); escenaEl.inert = false;
+  }
+
+  function desdeBase64url(s) {
+    var b = s.replace(/-/g, "+").replace(/_/g, "/");
+    while (b.length % 4) b += "=";
+    var bin = atob(b), u = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+    return u;
+  }
+  /* La clave solo se lee del fragmento (#k=...): nunca se envía ni se escribe en ningún lado */
+  function leerClave() {
+    var m = /(?:^#|&)k=([A-Za-z0-9_-]{43})(?:&|$)/.exec(location.hash || "");
+    if (!m) return null;
+    try { var k = desdeBase64url(m[1]); return k.length === 32 ? k : null; } catch (e) { return null; }
+  }
+
+  function abrirPersonal() {
+    barra.hidden = true;
+    mostrarEstado("cargando");
+    var clave = leerClave();
+    if (!clave) { mostrarEstado("incompleto"); return; }
+    if (!/^[a-z0-9]{10}$/.test(CAL_ID)) { mostrarEstado("noEncontrado"); return; }
+    var sutil = window.crypto && window.crypto.subtle;
+    if (!sutil || !window.fetch || !window.TextDecoder) { mostrarEstado("navegador"); return; }
+    fetch("c/" + CAL_ID + ".bin", { cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer" })
+      .then(function (r) {
+        if (r.status === 404 || r.status === 410) throw { aviso: "noEncontrado" };
+        if (!r.ok) throw { aviso: "red" };
+        return r.arrayBuffer().catch(function () { throw { aviso: "red" }; });
+      }, function () { throw { aviso: "red" }; })
+      .then(function (buf) {
+        var b = new Uint8Array(buf);
+        if (b.length < 4 + 12 + 16 || b[0] !== 65 || b[1] !== 68 || b[2] !== 86 || b[3] !== 49) throw { aviso: "descifrar" };
+        return sutil.importKey("raw", clave, { name: "AES-GCM" }, false, ["decrypt"])
+          .then(function (k) { return sutil.decrypt({ name: "AES-GCM", iv: b.slice(4, 16) }, k, b.slice(16)); })
+          .then(function (plano) {
+            return normalizar(JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(plano)));
+          })
+          .catch(function () { throw { aviso: "descifrar" }; });
+      })
+      .then(function (cal) {
+        CLAVE = "tv-abiertas-" + CAL_ID;
+        barra.hidden = !estado.barra;
+        usarCalendario(cal);
+        ocultarEstado();
+      })
+      .catch(function (e) {
+        mostrarEstado(e && AVISOS[e.aviso] ? e.aviso : "descifrar");
+      });
+  }
+  reintentarBtn.addEventListener("click", function () { if (MODO === "personal") abrirPersonal(); });
+
+  /* Vista previa: el editor (misma página de origen, ventana madre) manda {tipo:"tv-vista", datos:{...}} */
+  var pendiente = null;
+  function abrirVista() {
+    barra.hidden = true;
+    usarCalendario(normalizar({ estilo: "kawaii", dias: [] }));
+    window.addEventListener("message", function (e) {
+      if (e.source !== window.parent || e.origin !== location.origin) return;
+      var m = e.data;
+      if (!m || m.tipo !== "tv-vista" || !m.datos || typeof m.datos !== "object") return;
+      var cal;
+      try { cal = normalizar(m.datos); } catch (err) { return; }
+      /* Si una puerta se está abriendo, se aplica al terminar (solo el último envío) */
+      if (ocupado) {
+        var nuevo = !pendiente; pendiente = cal;
+        if (nuevo) (function esperar() {
+          if (ocupado) { setTimeout(esperar, 150); return; }
+          var c = pendiente; pendiente = null; usarCalendario(c);
+        })();
+        return;
+      }
+      pendiente = null;
+      usarCalendario(cal);
+    });
+    /* Aviso opcional al editor: la vista ya escucha */
+    try { if (window.parent !== window) window.parent.postMessage({ tipo: "tv-vista-lista" }, location.origin); } catch (e) { /* sin madre */ }
+  }
+
+  if (MODO === "personal") abrirPersonal();
+  else if (MODO === "vista") abrirVista();
+  else {
+    aplicarTema(estado.estilo);
+    actualizarURL();
+  }
+})();
+</script>
+</body>
+</html>
