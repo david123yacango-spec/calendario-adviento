@@ -223,13 +223,17 @@ body.tv-modal-abierto { overflow: hidden; }
 <script src="temas/glam.js"></script>
 <script src="temas/chocolateria.js"></script>
 <script src="temas/bloques.js"></script>
+<script src="temas/kpop.js"></script>
+<script src="temas/kbeauty.js"></script>
+<script src="temas/joyero.js"></script>
+<script src="temas/para-el.js"></script>
 <script>
 (function () {
   "use strict";
 
   /* ---------- Contenido de la demo ---------- */
-  var PARA = "Marina";
-  var DE = "David";
+  var PARA = "Rosa";
+  var DE = "Miguel";
 
   function svgUri(svg) {
     return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
@@ -307,7 +311,7 @@ body.tv-modal-abierto { overflow: hidden; }
   ];
 
   /* ---------- Utilidades ---------- */
-  var ORDEN_TEMAS = ["kawaii", "magico", "glam", "chocolateria", "bloques"];
+  var ORDEN_TEMAS = ["kawaii", "magico", "glam", "chocolateria", "bloques", "kpop", "kbeauty", "joyero", "para-el"];
 
   /* Modo: "demo" (sin ?c= ni ?vista=1), "personal" (?c=<id>, archivo cifrado) o "vista" (vista previa del editor) */
   var params = new URLSearchParams(location.search);
@@ -355,7 +359,7 @@ body.tv-modal-abierto { overflow: hidden; }
     /* En la vista previa todas las puertas se pueden abrir */
     prueba: MODO === "vista" || params.get("prueba") === "1",
     simular: (function () { var n = parseInt(params.get("dia"), 10); return n >= 1 && n <= 24 ? n : 0; })(),
-    /* Demo: barra salvo ?barra=0. Personalizado: solo con ?barra=1 (revisión de David). Vista previa: nunca. */
+    /* Demo: barra salvo ?barra=0. Personalizado: solo con ?barra=1. Vista previa: nunca. */
     barra: MODO === "demo" ? params.get("barra") !== "0" : (MODO === "personal" && params.get("barra") === "1")
   };
 

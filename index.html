@@ -220,8 +220,13 @@ section.paso{margin:34px 0 0;scroll-margin-top:12px}
 .prod{border:2px solid var(--borde);background:#fff;border-radius:14px;padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;min-width:0}
 .prod:hover{border-color:var(--rosa-2)}
 .prod .ico-p{width:44px;height:44px}.prod .ico-p svg{width:100%;height:100%}
+.foto-p{display:block;width:100%;height:100%;object-fit:cover;border-radius:12px;background:#fff}
+.prod .ico-p.con-foto{width:72px;height:72px}
+.vitrina .ico-v.con-foto{width:96px;height:96px}
+.vt-p .ico-p .foto-p{border-radius:10px}
 .prod .nom{font-size:13px;font-weight:700;line-height:1.2;overflow-wrap:anywhere}
 .prod .pre{font-size:13px;font-weight:800;color:var(--rosa-texto)}
+.prem{display:inline-block;margin-top:3px;padding:1px 8px;border-radius:999px;background:var(--lila-claro);color:var(--lila)!important;font-size:11.5px!important;font-weight:800;white-space:nowrap;width:fit-content;justify-self:start;align-self:start}
 .prod[aria-pressed="true"]{border-color:var(--rosa);background:var(--rosa-claro)}
 .vacio-lista{text-align:center;color:var(--suave);font-weight:700;padding:20px 0}
 
@@ -258,13 +263,78 @@ details.mensaje summary{cursor:pointer;font-weight:800;color:var(--lila)}
 details.mensaje pre{white-space:pre-wrap;word-break:break-word;background:#f7f3ff;border-radius:12px;padding:12px;font-family:inherit;font-size:14px;margin:8px 0 0}
 .reinicio{display:block;margin:18px auto 0;background:none;border:0;color:var(--suave);text-decoration:underline;font-weight:700;font-size:14px;min-height:40px}
 
+/* ---------- Calendario virtual: agregado a la caja ---------- */
+.extra-v{margin:12px 0 4px;padding:12px 14px 14px;border-radius:18px;border:2px dashed #d9c6ff;background:linear-gradient(135deg,#faf7ff,#fff5fa);transition:border-color .15s,box-shadow .15s}
+.extra-v.on{border-style:solid;border-color:var(--lila);box-shadow:0 0 0 3px var(--lila-claro)}
+.ev-cab{display:grid;grid-template-columns:auto auto minmax(0,1fr);align-items:center;gap:10px;cursor:pointer}
+.ev-cab input{width:26px;height:26px;margin:0;accent-color:var(--lila);cursor:pointer}
+.ev-ilus{width:44px;height:44px;flex:none}
+.ev-tit{font-family:"Fredoka",sans-serif;font-weight:600;font-size:17px;line-height:1.2;color:var(--lila)}
+.ev-tit b{color:var(--rosa-texto);font-weight:700;white-space:nowrap}
+.ev-des{margin:8px 0 0;font-size:14px;font-weight:600;color:var(--texto);line-height:1.4}
+.ev-estilos{margin-top:10px}
+.ev-estilos[hidden]{display:none}
+.ev-lbl{display:block;font-weight:800;font-size:14px;color:var(--choco);margin-bottom:6px}
+.ev-chips{display:flex;flex-wrap:wrap;gap:6px}
+.ev-chips .chip{min-height:44px;padding:6px 12px;display:inline-flex;align-items:center}
+.ev-pie{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:10px}
+.ev-auto{font-size:13px;font-weight:700;color:var(--suave)}
+.enlace-demo{display:inline-flex;align-items:center;gap:4px;min-height:40px;padding:6px 2px;font-weight:800;font-size:14px;color:var(--lila);text-decoration:underline;text-underline-offset:3px}
+.enlace-demo:hover{color:var(--rosa-texto)}
+.totales .t-v[hidden]{display:none}
+.beneficios li[hidden]{display:none}
+
+/* ---------- Calendario virtual: solo virtual ---------- */
+.beneficios li.solo-v-li{padding:0;border-color:#d9c6ff;background:var(--lila-claro)}
+.beneficios li.solo-v-li a{display:flex;align-items:center;gap:6px;padding:7px 14px;min-height:36px;color:var(--lila);text-decoration:none;border-radius:999px}
+.beneficios li.solo-v-li a:hover{text-decoration:underline}
+section.solo-v{margin-top:46px}
+.solo-v .paso-tit .n{background:var(--lila);box-shadow:0 0 0 3px #fff,0 0 0 5px #c4a8ff;font-size:19px}
+.sv-caja{padding:16px;background:linear-gradient(160deg,#fff 0,#fff 55%,#f6f0ff 100%)}
+.sv-pitch{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center;margin:0 0 14px}
+.sv-pitch svg{width:64px;height:64px}
+.sv-pitch p{margin:0;font-weight:600;font-size:15px}
+.sv-pitch p b{color:var(--rosa-texto)}
+.sv-estilos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.sv-car{position:relative;min-width:0;display:flex}
+.sv-op{flex:1;min-width:0;position:relative;text-align:left;padding:12px 12px 62px;background:#fff;border:3px solid var(--borde);border-radius:var(--radio);box-shadow:var(--sombra);display:flex;flex-direction:column;gap:2px;transition:transform .15s,border-color .15s}
+.sv-op:hover{transform:translateY(-2px)}
+.sv-op .emo{font-size:30px;line-height:1}
+.sv-op .nom{font-family:"Fredoka",sans-serif;font-weight:600;font-size:17px;line-height:1.15;color:var(--lila)}
+.sv-op .des{font-size:13px;color:var(--suave);line-height:1.3}
+.sv-op[aria-pressed="true"]{border-color:var(--lila);box-shadow:0 0 0 3px var(--lila-claro),var(--sombra);background:#fcfaff}
+.sv-op[aria-pressed="true"] .check{background:var(--lila)}
+.sv-car .ver-demo{position:absolute;left:12px;bottom:10px;z-index:1;display:inline-flex;align-items:center;min-height:44px;padding:4px 12px;border-radius:999px;border:2px solid var(--lila-claro);background:var(--lila-claro);color:var(--lila);font-weight:800;font-size:12.5px;text-decoration:none}
+.sv-car .ver-demo:hover{border-color:var(--lila)}
+.sv-form{display:grid;gap:12px;margin-top:16px}
+.sv-form .pedir{margin-top:0}
+#b-pedir-v{font-size:18px;padding:14px 16px}
+#b-pedir-v .np{white-space:nowrap}
+@media (max-width:699px){ .sv-car:last-child:nth-child(odd){grid-column:1 / -1} }
+.sv-elegido{margin:0;font-weight:700;color:var(--choco)}
+.sv-elegido b{color:var(--lila)}
+@media (min-width:700px){
+  .sv-estilos{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .sv-pitch svg{width:76px;height:76px}
+}
+@media (min-width:900px){
+  .sv-caja{padding:20px 22px}
+  .sv-form{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:end}
+  .sv-form .campo{grid-column:1}
+  .sv-form .pedir{grid-column:2;grid-row:1 / span 2;align-self:end}
+  .sv-form .sv-elegido{grid-column:1}
+  .sv-form details.mensaje{grid-column:1 / -1}
+}
+
 footer.pie{text-align:center;padding:30px 16px 10px;font-weight:700;color:var(--choco)}
 footer.pie a{color:var(--verde-osc);white-space:nowrap;display:inline-block;padding:9px 4px}
 
 /* ---------- Barra fija ---------- */
 .barra{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border-top:2px solid var(--rosa-claro);box-shadow:0 -6px 18px rgba(139,92,246,.12)}
 .barra .envoltura{display:flex;align-items:center;gap:10px;padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
-.barra .info{flex:1;min-width:0;font-weight:800;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.barra .info{flex:1;min-width:0;font-weight:800;font-size:16px;white-space:nowrap;display:flex;align-items:baseline;gap:4px}
+.barra .info .izq{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.barra .info .monto{flex-shrink:0;white-space:nowrap}
 .barra .info b{color:var(--rosa-texto)}
 
 /* ---------- Diálogo y aviso ---------- */
@@ -361,6 +431,7 @@ footer.pie a{color:var(--verde-osc);white-space:nowrap;display:inline-block;padd
     <li>💗 24 compartimentos para sorpresas</li>
     <li>✨ Tú eliges qué va en cada cajita</li>
     <li>🎄 Ideal para regalar y decorar</li>
+    <li class="solo-v-li" id="li-solo-v" hidden><a href="#solo-virtual" id="a-solo-v">📱 ¿Solo virtual? S/ 5</a></li>
   </ul>
   <div class="foto-cab"><img src="img/tres-cajas.jpg" alt="Las tres cajas de calendario de adviento: roja, rosa casita y rosa palacio" width="1200" height="750"></div>
 </header>
@@ -424,9 +495,26 @@ footer.pie a{color:var(--verde-osc);white-space:nowrap;display:inline-block;padd
         <div class="res-caja"><span id="r-caja"></span><span id="r-caja-pre"></span></div>
         <div class="res-tema" id="r-tema"></div>
         <ol class="dias" id="r-dias"></ol>
+        <div class="extra-v" id="extra-v" hidden>
+          <label class="ev-cab" for="v-check">
+            <input type="checkbox" id="v-check" aria-describedby="ev-des">
+            <svg class="ev-ilus" viewBox="0 0 48 48" aria-hidden="true"><rect x="12" y="3" width="24" height="42" rx="5" fill="#8b5cf6"/><rect x="15" y="8" width="18" height="30" rx="2" fill="#fff"/><g fill="#8b5cf6"><rect x="17" y="10" width="6" height="6" rx="1"/><rect x="25" y="10" width="6" height="6" rx="1"/><rect x="17" y="18" width="6" height="6" rx="1"/><rect x="26" y="19" width="2" height="2"/><rect x="29" y="22" width="2" height="2"/><rect x="26" y="25" width="2" height="2"/></g><path d="M24 36s-5-3-5-6.4a2.7 2.7 0 0 1 5-1.6 2.7 2.7 0 0 1 5 1.6C29 33 24 36 24 36z" fill="#ff4f9a"/><circle cx="24" cy="41.5" r="1.6" fill="#fff"/><path d="M40 6l1.2 3.4L44.6 10.6 41.2 11.8 40 15.2 38.8 11.8 35.4 10.6 38.8 9.4z" fill="#ffd23f"/></svg>
+            <span class="ev-tit">Agregar calendario virtual con QR <b id="ev-pre">(+S/ 5)</b></span>
+          </label>
+          <p class="ev-des" id="ev-des">Un QR pegado en la caja abre un calendario digital con 24 puertas: tus mensajes, fotos, vales y canciones, uno por día de diciembre.</p>
+          <div class="ev-estilos" id="ev-estilos" hidden>
+            <span class="ev-lbl" id="ev-lbl">Estilo del calendario virtual</span>
+            <div class="ev-chips" id="ev-chips" role="group" aria-labelledby="ev-lbl"></div>
+          </div>
+          <div class="ev-pie">
+            <a class="enlace-demo" id="ev-demo" href="#" target="_blank" rel="noopener">👀 Ver demostración<span class="sr"> (se abre en otra pestaña)</span> ↗</a>
+            <span class="ev-auto" id="ev-auto" aria-live="polite"></span>
+          </div>
+        </div>
         <div class="totales">
           <div><span>Sorpresas</span><span id="r-sorp"></span></div>
           <div><span>Caja</span><span id="r-cajap"></span></div>
+          <div class="t-v" id="r-v-fila" hidden><span>📱 Calendario virtual</span><span id="r-v"></span></div>
           <div class="tot"><span>Total</span><span id="r-total"></span></div>
         </div>
         <p class="aviso-falta" id="r-falta" aria-live="polite"></p>
@@ -440,6 +528,28 @@ footer.pie a{color:var(--verde-osc);white-space:nowrap;display:inline-block;padd
       <button class="reinicio" type="button" id="b-reinicio">↺ Empezar de nuevo</button>
     </section>
   </div>
+
+  <section class="paso solo-v" id="solo-virtual" aria-labelledby="t-solo-v" hidden>
+    <h2 class="paso-tit" id="t-solo-v"><span class="n" aria-hidden="true">📱</span>Calendario virtual</h2>
+    <p class="paso-ayuda">¿Sin caja? Regala solo el calendario digital, listo para abrir desde el celular.</p>
+    <div class="tarjeta sv-caja">
+      <div class="sv-pitch">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="14" y="3" width="36" height="58" rx="8" fill="#8b5cf6"/><rect x="18" y="10" width="28" height="42" rx="3" fill="#fff"/><g fill="#ffe3ef" stroke="#ff8cc0" stroke-width="1.2"><rect x="21" y="13" width="6.5" height="7" rx="1.5"/><rect x="28.75" y="13" width="6.5" height="7" rx="1.5"/><rect x="36.5" y="13" width="6.5" height="7" rx="1.5"/><rect x="21" y="22" width="6.5" height="7" rx="1.5"/><rect x="36.5" y="22" width="6.5" height="7" rx="1.5"/><rect x="21" y="31" width="6.5" height="7" rx="1.5"/><rect x="28.75" y="31" width="6.5" height="7" rx="1.5"/><rect x="36.5" y="31" width="6.5" height="7" rx="1.5"/></g><rect x="28.75" y="22" width="6.5" height="7" rx="1.5" fill="#ff4f9a"/><path d="M32 49s-6-3.6-6-7.6a3.2 3.2 0 0 1 6-1.8 3.2 3.2 0 0 1 6 1.8c0 4-6 7.6-6 7.6z" fill="#ff4f9a"/><circle cx="32" cy="56.5" r="2" fill="#fff"/><path d="M54 8l1.5 4.5L60 14l-4.5 1.5L54 20l-1.5-4.5L48 14l4.5-1.5z" fill="#ffd23f"/><path d="M8 40l1 3 3 1-3 1-1 3-1-3-3-1 3-1z" fill="#ffd23f"/></svg>
+        <p>24 puertas que se abren una por día de diciembre, con <b>tus mensajes, fotos, vales y canciones</b>. Te mandamos el enlace y su QR por WhatsApp para que lo regales como quieras.</p>
+      </div>
+      <h3 class="sr" id="sv-lbl">Elige el estilo</h3>
+      <div class="sv-estilos" id="sv-estilos" role="group" aria-labelledby="sv-lbl"></div>
+      <div class="sv-form">
+        <p class="sv-elegido" id="sv-elegido" aria-live="polite"></p>
+        <div class="campo"><label for="sv-para">Para <small>(nombre, opcional)</small></label><input id="sv-para" maxlength="60" placeholder="Ej.: Valeria" autocomplete="off"></div>
+        <button class="btn verde pedir" type="button" id="b-pedir-v">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><path fill="#fff" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm0 23.6a10.6 10.6 0 0 1-5.4-1.5l-.4-.2-3.9 1 1-3.8-.2-.4A10.6 10.6 0 1 1 16 26.6zm5.8-7.9c-.3-.2-1.9-.9-2.2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7.1a8.7 8.7 0 0 1-4.3-3.8c-.3-.6.3-.5.9-1.7.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6a1.2 1.2 0 0 0-.9.4 3.6 3.6 0 0 0-1.1 2.7 6.3 6.3 0 0 0 1.3 3.3 14.4 14.4 0 0 0 5.5 4.9c2 .9 2.8 1 3.9.8a3.3 3.3 0 0 0 2.1-1.5 2.7 2.7 0 0 0 .2-1.5c-.1-.2-.3-.2-.6-.4z"/></svg>
+          <span id="b-pedir-v-txt">Pedir calendario virtual <span class="np">· S/ 5</span></span>
+        </button>
+        <details class="mensaje"><summary>Ver el mensaje que se enviará</summary><pre id="sv-msg"></pre></details>
+      </div>
+    </div>
+  </section>
 </main>
 
 <footer class="pie" id="pie"></footer>
@@ -490,7 +600,7 @@ footer.pie a{color:var(--verde-osc);white-space:nowrap;display:inline-block;padd
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script>window.CATALOGO = {"nota":"Precios de EJEMPLO: cámbialos por los tuyos","whatsapp":"51928196723","cajas":[{"id":"rojo","nombre":"Rojo clásico","emoji":"🔴","precio":35,"foto":"img/caja-rojo.jpg","detalle":"Caja roja con puertas verdes y 24 cajoncitos numerados. El clásico navideño de siempre."},{"id":"rosa-casita","nombre":"Rosa casita","emoji":"🌸","precio":39,"foto":"img/caja-rosa-casita.jpg","detalle":"Casita rosada con techo y 24 cajoncitos. Tierna para regalar y decorar."},{"id":"rosa-palacio","nombre":"Rosa palacio","emoji":"💗","precio":39,"foto":"img/caja-rosa-palacio.jpg","detalle":"Palacio rosado con torrecitas y 24 cajoncitos. El más coqueto de la colección."}],"categorias":[{"id":"dulces","nombre":"Chocolates y dulces","emoji":"🍫"},{"id":"snacks","nombre":"Snacks y bebidas","emoji":"🍿"},{"id":"kpop","nombre":"K-pop","emoji":"💜"},{"id":"kbeauty","nombre":"K-beauty","emoji":"🧖‍♀️"},{"id":"maquillaje","nombre":"Maquillaje","emoji":"💄"},{"id":"accesorios","nombre":"Accesorios","emoji":"🎀"},{"id":"bisuteria","nombre":"Bisutería","emoji":"💍"},{"id":"cuidado","nombre":"Cuidado personal","emoji":"🧴"},{"id":"papeleria","nombre":"Papelería","emoji":"✏️"},{"id":"ninos","nombre":"Para niños","emoji":"🧸"},{"id":"detalles","nombre":"Mensajes y vales","emoji":"💌"}],"productos":[{"id":"sublime","nombre":"Chocolate Sublime clásico","categoria":"dulces","precio":2.0,"icono":"chocolate-barra"},{"id":"tuyo","nombre":"Chocolate Tuyo","categoria":"dulces","precio":1.0,"icono":"chocolate-barra"},{"id":"sublime-almendras","nombre":"Sublime con almendras","categoria":"dulces","precio":2.5,"icono":"chocolate-barra"},{"id":"triangulo","nombre":"Chocolate Triángulo","categoria":"dulces","precio":2.5,"icono":"chocolate-barra"},{"id":"princesa","nombre":"Chocolate Princesa","categoria":"dulces","precio":1.5,"icono":"chocolate-barra"},{"id":"kit-kat","nombre":"Kit Kat","categoria":"dulces","precio":3.0,"icono":"chocolate-barra"},{"id":"snickers","nombre":"Snickers","categoria":"dulces","precio":3.5,"icono":"chocolate-barra"},{"id":"cua-cua","nombre":"Cua Cua","categoria":"dulces","precio":1.0,"icono":"wafer"},{"id":"morochas","nombre":"Galletas Morochas","categoria":"dulces","precio":1.0,"icono":"galleta-rellena"},{"id":"chocman","nombre":"Chocman","categoria":"dulces","precio":1.5,"icono":"chocolate-bombon"},{"id":"bon-o-bon","nombre":"Bon o Bon","categoria":"dulces","precio":3.0,"icono":"chocolate-bombon"},{"id":"ferrero","nombre":"Bombón Ferrero Rocher","categoria":"dulces","precio":4.0,"icono":"chocolate-bombon"},{"id":"caja-bombones","nombre":"Cajita de bombones surtidos","categoria":"dulces","precio":9.0,"icono":"chocolate-caja"},{"id":"dona-pepa","nombre":"Galleta Doña Pepa","categoria":"dulces","precio":1.5,"icono":"galleta"},{"id":"chin-chin","nombre":"Galleta Chin Chin","categoria":"dulces","precio":1.0,"icono":"galleta"},{"id":"hony-bran","nombre":"Galletas Hony Bran","categoria":"dulces","precio":1.0,"icono":"galleta"},{"id":"picaras","nombre":"Galletas Pícaras","categoria":"dulces","precio":1.0,"icono":"galleta-rellena"},{"id":"casino","nombre":"Galletas Casino","categoria":"dulces","precio":1.0,"icono":"galleta-rellena"},{"id":"oreo","nombre":"Galletas Oreo","categoria":"dulces","precio":1.5,"icono":"galleta-rellena"},{"id":"alfajor-manjar","nombre":"Alfajor de manjar blanco","categoria":"dulces","precio":3.0,"icono":"alfajor"},{"id":"turron-mini","nombre":"Turrón de Doña Pepa mini","categoria":"dulces","precio":4.0,"icono":"turron"},{"id":"chupa-chups","nombre":"Chupetín Chupa Chups","categoria":"dulces","precio":0.8,"icono":"chupetin"},{"id":"gomitas","nombre":"Gomitas de ositos","categoria":"dulces","precio":2.0,"icono":"gomitas"},{"id":"frunas","nombre":"Frunas","categoria":"dulces","precio":0.5,"icono":"caramelo"},{"id":"caramelos-fresa","nombre":"Caramelos de fresa","categoria":"dulces","precio":1.0,"icono":"caramelo"},{"id":"trident","nombre":"Chicle Trident","categoria":"dulces","precio":5.0,"icono":"chicle"},{"id":"toffee","nombre":"Toffees de leche","categoria":"dulces","precio":1.0,"icono":"toffee"},{"id":"marshmallows","nombre":"Marshmallows","categoria":"dulces","precio":2.5,"icono":"marshmallow"},{"id":"panetoncito","nombre":"Panetoncito","categoria":"dulces","precio":3.5,"icono":"panetoncito"},{"id":"inka-chips","nombre":"Inka Chips","categoria":"snacks","precio":2.5,"icono":"papas"},{"id":"papas-lays","nombre":"Papas Lay's","categoria":"snacks","precio":2.0,"icono":"papas"},{"id":"piqueo-snax","nombre":"Piqueo Snax","categoria":"snacks","precio":2.0,"icono":"snack-bolsa"},{"id":"cheese-tris","nombre":"Cheese Tris","categoria":"snacks","precio":1.5,"icono":"snack-bolsa"},{"id":"cuates","nombre":"Cuates","categoria":"snacks","precio":1.0,"icono":"snack-bolsa"},{"id":"doritos","nombre":"Doritos","categoria":"snacks","precio":2.0,"icono":"snack-bolsa"},{"id":"chifles","nombre":"Chifles","categoria":"snacks","precio":2.5,"icono":"snack-bolsa"},{"id":"canchita","nombre":"Canchita salada","categoria":"snacks","precio":2.0,"icono":"canchita"},{"id":"inca-kola","nombre":"Inca Kola mini","categoria":"snacks","precio":1.5,"icono":"gaseosa"},{"id":"coca-cola","nombre":"Coca-Cola mini","categoria":"snacks","precio":1.5,"icono":"gaseosa"},{"id":"frugos","nombre":"Jugo Frugos","categoria":"snacks","precio":1.5,"icono":"jugo"},{"id":"cafe-sobre","nombre":"Café instantáneo en sobre","categoria":"snacks","precio":1.0,"icono":"cafe"},{"id":"te-canela","nombre":"Té de canela y clavo","categoria":"snacks","precio":1.0,"icono":"te"},{"id":"chocolate-caliente","nombre":"Chocolate caliente en sobre","categoria":"snacks","precio":1.5,"icono":"chocolate-taza"},{"id":"ramen","nombre":"Ramen coreano picante","categoria":"snacks","precio":8.0,"icono":"ramen"},{"id":"pepero","nombre":"Pepero","categoria":"snacks","precio":7.1,"icono":"pepero"},{"id":"leche-platano","nombre":"Leche de plátano coreana","categoria":"snacks","precio":8.4,"icono":"leche-platano"},{"id":"volt","nombre":"Energizante Volt","categoria":"snacks","precio":2.0,"icono":"energizante"},{"id":"rehidratante","nombre":"Bebida rehidratante","categoria":"snacks","precio":2.5,"icono":"energizante"},{"id":"pc-bias","nombre":"Photocard de tu bias (a elegir)","categoria":"kpop","precio":3.0,"icono":"photocard"},{"id":"pc-holo","nombre":"Photocard holográfica","categoria":"kpop","precio":3.0,"icono":"photocard"},{"id":"pc-navidad","nombre":"Photocard edición navideña","categoria":"kpop","precio":3.0,"icono":"photocard"},{"id":"llavero-kpop","nombre":"Llavero acrílico K-pop","categoria":"kpop","precio":6.0,"icono":"llavero"},{"id":"stickers-kpop","nombre":"Stickers K-pop","categoria":"kpop","precio":2.5,"icono":"sticker"},{"id":"lightstick-mini","nombre":"Mini lightstick llavero","categoria":"kpop","precio":12.0,"icono":"lightstick"},{"id":"fotolibro-kpop","nombre":"Mini fotolibro K-pop","categoria":"kpop","precio":10.0,"icono":"album"},{"id":"poster-kpop","nombre":"Póster mini K-pop","categoria":"kpop","precio":3.5,"icono":"poster"},{"id":"mascarilla-pepino","nombre":"Mascarilla coreana de pepino","categoria":"kbeauty","precio":4.5,"icono":"mascarilla"},{"id":"mascarilla-aloe","nombre":"Mascarilla coreana de aloe","categoria":"kbeauty","precio":4.5,"icono":"mascarilla"},{"id":"mascarilla-te-verde","nombre":"Mascarilla coreana de té verde","categoria":"kbeauty","precio":5.0,"icono":"mascarilla"},{"id":"parches-ojos","nombre":"Parches para ojos (par)","categoria":"kbeauty","precio":3.5,"icono":"parches-ojos"},{"id":"parches-granitos","nombre":"Parches para granitos","categoria":"kbeauty","precio":4.0,"icono":"parches-ojos"},{"id":"balsamo-fresa","nombre":"Bálsamo labial de fresa","categoria":"kbeauty","precio":15.0,"icono":"balsamo"},{"id":"lip-tint","nombre":"Lip tint coreano","categoria":"kbeauty","precio":9.0,"icono":"tint"},{"id":"crema-manos-durazno","nombre":"Crema de manos de durazno","categoria":"kbeauty","precio":30.0,"icono":"crema-manos"},{"id":"labial-mate","nombre":"Labial mate mini","categoria":"maquillaje","precio":8.0,"icono":"labial"},{"id":"brillo-labial","nombre":"Brillo labial","categoria":"maquillaje","precio":6.0,"icono":"brillo"},{"id":"rubor-crema","nombre":"Rubor en crema","categoria":"maquillaje","precio":9.0,"icono":"rubor"},{"id":"brocha","nombre":"Brocha de maquillaje","categoria":"maquillaje","precio":5.0,"icono":"brocha"},{"id":"esmalte","nombre":"Esmalte de uñas","categoria":"maquillaje","precio":4.5,"icono":"esmalte"},{"id":"esmalte-glitter","nombre":"Esmalte con brillitos","categoria":"maquillaje","precio":5.0,"icono":"esmalte"},{"id":"espejo-bolsillo","nombre":"Espejito de bolsillo","categoria":"maquillaje","precio":5.0,"icono":"espejo"},{"id":"scrunchie","nombre":"Scrunchie de satén","categoria":"accesorios","precio":3.0,"icono":"scrunchie"},{"id":"pinches-corazon","nombre":"Pinches de corazón (par)","categoria":"accesorios","precio":2.5,"icono":"pinche"},{"id":"pinza-garra","nombre":"Pinza garra para el cabello","categoria":"accesorios","precio":4.0,"icono":"pinza"},{"id":"medias-navidenas","nombre":"Medias navideñas","categoria":"accesorios","precio":6.0,"icono":"medias"},{"id":"llavero-peluche","nombre":"Llavero de peluchito","categoria":"accesorios","precio":6.0,"icono":"llavero"},{"id":"espejo-corazon","nombre":"Espejito de corazón","categoria":"accesorios","precio":6.0,"icono":"espejo"},{"id":"aretes-corazon","nombre":"Aretes de corazón","categoria":"bisuteria","precio":5.0,"icono":"aretes"},{"id":"aretes-perla","nombre":"Aretes de perla","categoria":"bisuteria","precio":6.0,"icono":"aretes"},{"id":"anillo-ajustable","nombre":"Anillo ajustable","categoria":"bisuteria","precio":19.7,"icono":"anillo"},{"id":"pulsera-hilo","nombre":"Pulsera de hilo con dije","categoria":"bisuteria","precio":36.0,"icono":"pulsera"},{"id":"pulsera-mostacillas","nombre":"Pulsera de mostacillas","categoria":"bisuteria","precio":3.5,"icono":"pulsera"},{"id":"collar-luna","nombre":"Collar con dije de luna","categoria":"bisuteria","precio":8.0,"icono":"collar"},{"id":"collar-inicial","nombre":"Collar con inicial","categoria":"bisuteria","precio":12.0,"icono":"collar"},{"id":"vela-aromatica","nombre":"Velita de corazón","categoria":"cuidado","precio":1.8,"icono":"vela"},{"id":"balsamo-cacao","nombre":"Bálsamo de cacao","categoria":"cuidado","precio":3.5,"icono":"balsamo"},{"id":"crema-corporal","nombre":"Crema corporal mini","categoria":"cuidado","precio":6.0,"icono":"crema-manos"},{"id":"colonia-bolsillo","nombre":"Colonia de bolsillo","categoria":"cuidado","precio":8.0,"icono":"perfume"},{"id":"perfume-mini","nombre":"Perfume mini roll-on","categoria":"cuidado","precio":10.0,"icono":"perfume"},{"id":"aceite-barba","nombre":"Aceite para barba","categoria":"cuidado","precio":15.0,"icono":"barba"},{"id":"peine-barba","nombre":"Peine para barba","categoria":"cuidado","precio":5.0,"icono":"barba"},{"id":"lapicero-gel","nombre":"Lapicero de gel kawaii","categoria":"papeleria","precio":3.0,"icono":"lapicero"},{"id":"lapicero-pompon","nombre":"Lapicero con pompón","categoria":"papeleria","precio":4.0,"icono":"lapicero"},{"id":"resaltador-pastel","nombre":"Resaltador pastel","categoria":"papeleria","precio":3.0,"icono":"lapicero"},{"id":"libreta-mini","nombre":"Libreta mini","categoria":"papeleria","precio":5.0,"icono":"libreta"},{"id":"post-its","nombre":"Notas adhesivas de colores","categoria":"papeleria","precio":3.5,"icono":"libreta"},{"id":"stickers-kawaii","nombre":"Stickers kawaii","categoria":"papeleria","precio":2.0,"icono":"sticker"},{"id":"juguete-sorpresa","nombre":"Juguete sorpresa","categoria":"ninos","precio":4.0,"icono":"juguete"},{"id":"carrito","nombre":"Carrito de juguete","categoria":"ninos","precio":5.0,"icono":"juguete"},{"id":"burbujero","nombre":"Burbujero","categoria":"ninos","precio":2.5,"icono":"juguete"},{"id":"plastilina","nombre":"Plastilina de colores","categoria":"ninos","precio":3.0,"icono":"juguete"},{"id":"colores-x6","nombre":"Colores x 6","categoria":"ninos","precio":4.0,"icono":"colores"},{"id":"figurita-animal","nombre":"Figurita de animalito","categoria":"ninos","precio":3.5,"icono":"figurita"},{"id":"figurita-dino","nombre":"Figurita de dinosaurio","categoria":"ninos","precio":3.5,"icono":"figurita"},{"id":"stickers-animalitos","nombre":"Stickers de animalitos","categoria":"ninos","precio":2.0,"icono":"sticker"},{"id":"carta","nombre":"Carta escrita a mano","categoria":"detalles","precio":3.0,"icono":"carta"},{"id":"mensaje-motivador","nombre":"Mensajito motivador","categoria":"detalles","precio":1.0,"icono":"carta"},{"id":"vale-abrazo","nombre":"Vale por un abrazo","categoria":"detalles","precio":1.0,"icono":"vale"},{"id":"vale-cita","nombre":"Vale por una cita","categoria":"detalles","precio":1.0,"icono":"vale"},{"id":"vale-desayuno","nombre":"Vale por un desayuno en la cama","categoria":"detalles","precio":1.0,"icono":"vale"},{"id":"vale-peli","nombre":"Vale por una peli juntos","categoria":"detalles","precio":1.0,"icono":"vale"},{"id":"foto-impresa","nombre":"Foto impresa","categoria":"detalles","precio":2.0,"icono":"foto"},{"id":"foto-polaroid","nombre":"Foto estilo polaroid","categoria":"detalles","precio":3.0,"icono":"foto"},{"id":"taza-navidena","nombre":"Mini taza navideña","categoria":"detalles","precio":12.0,"icono":"taza"},{"id":"regalo-sorpresa","nombre":"Regalo sorpresa especial","categoria":"detalles","precio":29.9,"icono":"regalo"},{"id":"milkis","nombre":"Gaseosa coreana Milkis (lata)","categoria":"snacks","precio":8.4,"icono":"gaseosa"},{"id":"bebida-arroz","nombre":"Bebida coreana de arroz","categoria":"snacks","precio":8.4,"icono":"jugo"},{"id":"vizzio","nombre":"Chocolate Vizzio almendra","categoria":"dulces","precio":1.5,"icono":"chocolate-bombon"},{"id":"mascarilla-fresa","nombre":"Mascarilla coreana de fresa","categoria":"kbeauty","precio":3.6,"icono":"mascarilla"},{"id":"limpiador-facial","nombre":"Limpiador facial mini","categoria":"kbeauty","precio":10.2,"icono":"crema-manos"},{"id":"esponja","nombre":"Esponja de maquillaje","categoria":"maquillaje","precio":1.2,"icono":"brocha"},{"id":"mono-pelo","nombre":"Moño para el pelo","categoria":"accesorios","precio":6.0,"icono":"scrunchie"},{"id":"ganchitos","nombre":"Ganchitos de colores (bolsita)","categoria":"accesorios","precio":3.5,"icono":"pinza"},{"id":"neceser","nombre":"Neceser mini","categoria":"accesorios","precio":8.3,"icono":"regalo"},{"id":"aretes-flor","nombre":"Aretes de flor","categoria":"bisuteria","precio":19.7,"icono":"aretes"},{"id":"mini-fondy","nombre":"Chocolatito Mini Fondy","categoria":"dulces","precio":2.3,"icono":"chocolate-caja"},{"id":"caramelo-cafe","nombre":"Caramelos de café Kopiko (5 unid.)","categoria":"dulces","precio":3.0,"icono":"caramelo"}],"tematicas":[{"id":"dulce-peruano","nombre":"Dulce peruano","emoji":"🍫","descripcion":"Los clásicos de la bodega: Sublime, Tuyo, Cua Cua, Doña Pepa y más.","dias":["sublime","cua-cua","dona-pepa","princesa","picaras","chocman","inca-kola","triangulo","morochas","casino","alfajor-manjar","caramelos-fresa","sublime-almendras","toffee","frunas","canchita","hony-bran","tuyo","chin-chin","chocolate-caliente","chocman","turron-mini","sublime","panetoncito"]},{"id":"k-pop-lover","nombre":"K-pop lover","emoji":"💜","descripcion":"Photocards, stickers y antojitos coreanos para fans.","dias":["pc-bias","pepero","stickers-kpop","pc-holo","leche-platano","pc-navidad","gomitas","pc-bias","llavero-kpop","poster-kpop","pc-holo","ramen","stickers-kawaii","pc-bias","pepero","lapicero-gel","pc-holo","poster-kpop","pc-navidad","leche-platano","pc-bias","fotolibro-kpop","llavero-kpop","lightstick-mini"]},{"id":"k-beauty-glow","nombre":"K-beauty glow","emoji":"✨","descripcion":"Mascarillas, parches y bálsamos para brillar en diciembre.","dias":["mascarilla-pepino","parches-ojos","balsamo-fresa","mascarilla-aloe","scrunchie","mascarilla-te-verde","parches-granitos","pepero","mascarilla-pepino","crema-manos-durazno","parches-ojos","mascarilla-aloe","esmalte","mascarilla-te-verde","leche-platano","parches-granitos","mascarilla-pepino","balsamo-fresa","parches-ojos","mascarilla-aloe","espejo-bolsillo","vela-aromatica","mascarilla-te-verde","lip-tint"]},{"id":"glam","nombre":"Glam","emoji":"💄","descripcion":"Maquillaje y detallitos para lucir regia.","dias":["brillo-labial","esmalte","pinches-corazon","bon-o-bon","brocha","balsamo-fresa","esmalte-glitter","scrunchie","ferrero","espejo-bolsillo","aretes-corazon","mascarilla-pepino","brillo-labial","pinza-garra","esmalte","parches-ojos","lip-tint","ferrero","esmalte-glitter","rubor-crema","pulsera-hilo","colonia-bolsillo","brocha","labial-mate"]},{"id":"bisuteria","nombre":"Bisutería y accesorios","emoji":"💍","descripcion":"Aretes, pulseras, anillos y accesorios para el cabello.","dias":["pulsera-mostacillas","scrunchie","aretes-corazon","pinches-corazon","anillo-ajustable","bon-o-bon","pulsera-hilo","pinza-garra","aretes-perla","llavero-peluche","scrunchie","pulsera-mostacillas","ferrero","anillo-ajustable","pinches-corazon","aretes-corazon","espejo-corazon","pulsera-hilo","pinza-garra","aretes-perla","collar-luna","anillo-ajustable","ferrero","collar-inicial"]},{"id":"para-mi-amor","nombre":"Para mi amor","emoji":"💗","descripcion":"Chocolates, vales y recuerdos para tu persona favorita.","dias":["carta","sublime","vale-abrazo","ferrero","foto-impresa","bon-o-bon","vale-peli","mensaje-motivador","triangulo","foto-polaroid","vale-desayuno","alfajor-manjar","chocolate-caliente","vale-cita","ferrero","foto-impresa","sublime-almendras","vela-aromatica","vale-abrazo","foto-polaroid","caja-bombones","carta","taza-navidena","regalo-sorpresa"]},{"id":"para-el","nombre":"Para él","emoji":"🧔","descripcion":"Snacks, bebidas y cositas para él.","dias":["inka-chips","snickers","cafe-sobre","cuates","rehidratante","piqueo-snax","volt","kit-kat","chifles","peine-barba","inca-kola","cheese-tris","medias-navidenas","hony-bran","canchita","sublime-almendras","vale-peli","ramen","snickers","coca-cola","cafe-sobre","foto-impresa","carta","aceite-barba"]},{"id":"ninos","nombre":"Para niños","emoji":"🧸","descripcion":"Juguetitos, figuritas, colores y golosinas para los peques.","dias":["chupa-chups","stickers-animalitos","gomitas","figurita-animal","cua-cua","burbujero","frugos","colores-x6","marshmallows","figurita-dino","chocman","juguete-sorpresa","caramelos-fresa","plastilina","oreo","figurita-animal","picaras","carrito","stickers-animalitos","chocolate-caliente","figurita-dino","juguete-sorpresa","medias-navidenas","regalo-sorpresa"]},{"id":"mixto","nombre":"Mixto","emoji":"🎄","descripcion":"Un poquito de todo: dulces, snacks, belleza y detalles.","dias":["sublime","pc-bias","inka-chips","mascarilla-pepino","cua-cua","scrunchie","inca-kola","lapicero-gel","dona-pepa","aretes-corazon","stickers-kawaii","pepero","esmalte","vale-abrazo","bon-o-bon","parches-ojos","gomitas","libreta-mini","foto-impresa","chocolate-caliente","pulsera-hilo","panetoncito","carta","taza-navidena"]}]};</script>
+<script>window.CATALOGO = {"nota":"Precios de EJEMPLO: cámbialos por los tuyos","whatsapp":"51928196723","cajas":[{"id":"rojo","nombre":"Rojo clásico","emoji":"🔴","precio":35,"foto":"img/caja-rojo.jpg","detalle":"Caja roja con puertas verdes y 24 cajoncitos numerados. El clásico navideño de siempre."},{"id":"rosa-casita","nombre":"Rosa casita","emoji":"🌸","precio":39,"foto":"img/caja-rosa-casita.jpg","detalle":"Casita rosada con techo y 24 cajoncitos. Tierna para regalar y decorar."},{"id":"rosa-palacio","nombre":"Rosa palacio","emoji":"💗","precio":39,"foto":"img/caja-rosa-palacio.jpg","detalle":"Palacio rosado con torrecitas y 24 cajoncitos. El más coqueto de la colección."}],"categorias":[{"id":"dulces","nombre":"Chocolates y dulces","emoji":"🍫"},{"id":"snacks","nombre":"Snacks y bebidas","emoji":"🍿"},{"id":"kpop","nombre":"K-pop","emoji":"💜"},{"id":"kbeauty","nombre":"K-beauty","emoji":"🧖‍♀️"},{"id":"maquillaje","nombre":"Maquillaje","emoji":"💄"},{"id":"accesorios","nombre":"Accesorios","emoji":"🎀"},{"id":"bisuteria","nombre":"Bisutería","emoji":"💍"},{"id":"cuidado","nombre":"Cuidado personal","emoji":"🧴"},{"id":"papeleria","nombre":"Papelería","emoji":"✏️"},{"id":"ninos","nombre":"Para niños","emoji":"🧸"},{"id":"detalles","nombre":"Mensajes y vales","emoji":"💌"}],"productos":[{"id":"sublime","nombre":"Chocolate Sublime clásico","categoria":"dulces","precio":2.0,"icono":"chocolate-barra"},{"id":"tuyo","nombre":"Chocolate Tuyo","categoria":"dulces","precio":1.0,"icono":"chocolate-barra"},{"id":"sublime-almendras","nombre":"Sublime con almendras","categoria":"dulces","precio":2.5,"icono":"chocolate-barra"},{"id":"triangulo","nombre":"Chocolate Triángulo","categoria":"dulces","precio":2.5,"icono":"chocolate-barra"},{"id":"princesa","nombre":"Chocolate Princesa","categoria":"dulces","precio":1.5,"icono":"chocolate-barra"},{"id":"kit-kat","nombre":"Kit Kat","categoria":"dulces","precio":3.0,"icono":"chocolate-barra"},{"id":"snickers","nombre":"Snickers","categoria":"dulces","precio":3.5,"icono":"chocolate-barra"},{"id":"cua-cua","nombre":"Cua Cua","categoria":"dulces","precio":1.0,"icono":"wafer"},{"id":"morochas","nombre":"Galletas Morochas","categoria":"dulces","precio":1.0,"icono":"galleta-rellena"},{"id":"chocman","nombre":"Chocman","categoria":"dulces","precio":1.5,"icono":"chocolate-bombon"},{"id":"bon-o-bon","nombre":"Bon o Bon","categoria":"dulces","precio":3.0,"icono":"chocolate-bombon"},{"id":"ferrero","nombre":"Bombón Ferrero Rocher","categoria":"dulces","precio":4.0,"icono":"chocolate-bombon"},{"id":"caja-bombones","nombre":"Cajita de bombones surtidos","categoria":"dulces","precio":9.0,"icono":"chocolate-caja"},{"id":"dona-pepa","nombre":"Galleta Doña Pepa","categoria":"dulces","precio":1.5,"icono":"galleta"},{"id":"chin-chin","nombre":"Galleta Chin Chin","categoria":"dulces","precio":1.0,"icono":"galleta"},{"id":"hony-bran","nombre":"Galletas Hony Bran","categoria":"dulces","precio":1.0,"icono":"galleta"},{"id":"picaras","nombre":"Galletas Pícaras","categoria":"dulces","precio":1.0,"icono":"galleta-rellena"},{"id":"casino","nombre":"Galletas Casino","categoria":"dulces","precio":1.0,"icono":"galleta-rellena"},{"id":"oreo","nombre":"Galletas Oreo","categoria":"dulces","precio":1.5,"icono":"galleta-rellena"},{"id":"alfajor-manjar","nombre":"Alfajor de manjar blanco","categoria":"dulces","precio":3.0,"icono":"alfajor"},{"id":"turron-mini","nombre":"Turrón de Doña Pepa mini","categoria":"dulces","precio":4.0,"icono":"turron"},{"id":"chupa-chups","nombre":"Chupetín Chupa Chups","categoria":"dulces","precio":0.8,"icono":"chupetin"},{"id":"gomitas","nombre":"Gomitas de ositos","categoria":"dulces","precio":2.0,"icono":"gomitas"},{"id":"frunas","nombre":"Frunas","categoria":"dulces","precio":0.5,"icono":"caramelo"},{"id":"caramelos-fresa","nombre":"Caramelos de fresa","categoria":"dulces","precio":1.0,"icono":"caramelo"},{"id":"trident","nombre":"Chicle Trident","categoria":"dulces","precio":5.0,"icono":"chicle"},{"id":"toffee","nombre":"Toffees de leche","categoria":"dulces","precio":1.0,"icono":"toffee"},{"id":"marshmallows","nombre":"Marshmallows","categoria":"dulces","precio":2.5,"icono":"marshmallow"},{"id":"panetoncito","nombre":"Panetoncito","categoria":"dulces","precio":3.5,"icono":"panetoncito"},{"id":"inka-chips","nombre":"Inka Chips","categoria":"snacks","precio":2.5,"icono":"papas"},{"id":"papas-lays","nombre":"Papas Lay's","categoria":"snacks","precio":2.0,"icono":"papas"},{"id":"piqueo-snax","nombre":"Piqueo Snax","categoria":"snacks","precio":2.0,"icono":"snack-bolsa"},{"id":"cheese-tris","nombre":"Cheese Tris","categoria":"snacks","precio":1.5,"icono":"snack-bolsa"},{"id":"cuates","nombre":"Cuates","categoria":"snacks","precio":1.0,"icono":"snack-bolsa"},{"id":"doritos","nombre":"Doritos","categoria":"snacks","precio":2.0,"icono":"snack-bolsa"},{"id":"chifles","nombre":"Chifles","categoria":"snacks","precio":2.5,"icono":"snack-bolsa"},{"id":"canchita","nombre":"Canchita salada","categoria":"snacks","precio":2.0,"icono":"canchita"},{"id":"inca-kola","nombre":"Inca Kola mini","categoria":"snacks","precio":1.5,"icono":"gaseosa"},{"id":"coca-cola","nombre":"Coca-Cola mini","categoria":"snacks","precio":1.5,"icono":"gaseosa"},{"id":"frugos","nombre":"Jugo Frugos","categoria":"snacks","precio":1.5,"icono":"jugo"},{"id":"cafe-sobre","nombre":"Café instantáneo en sobre","categoria":"snacks","precio":1.0,"icono":"cafe"},{"id":"te-canela","nombre":"Té de canela y clavo","categoria":"snacks","precio":1.0,"icono":"te"},{"id":"chocolate-caliente","nombre":"Chocolate caliente en sobre","categoria":"snacks","precio":1.5,"icono":"chocolate-taza"},{"id":"ramen","nombre":"Ramen coreano picante","categoria":"snacks","precio":8.0,"icono":"ramen"},{"id":"pepero","nombre":"Pepero","categoria":"snacks","precio":7.1,"icono":"pepero"},{"id":"leche-platano","nombre":"Leche de plátano coreana","categoria":"snacks","precio":8.4,"icono":"leche-platano"},{"id":"volt","nombre":"Energizante Volt","categoria":"snacks","precio":2.0,"icono":"energizante"},{"id":"rehidratante","nombre":"Bebida rehidratante","categoria":"snacks","precio":2.5,"icono":"energizante"},{"id":"pc-bias","nombre":"Photocard de tu bias (a elegir)","categoria":"kpop","precio":3.0,"icono":"photocard"},{"id":"pc-holo","nombre":"Photocard holográfica","categoria":"kpop","precio":3.0,"icono":"photocard"},{"id":"pc-navidad","nombre":"Photocard edición navideña","categoria":"kpop","precio":3.0,"icono":"photocard"},{"id":"llavero-kpop","nombre":"Llavero acrílico K-pop","categoria":"kpop","precio":6.0,"icono":"llavero"},{"id":"stickers-kpop","nombre":"Stickers K-pop","categoria":"kpop","precio":2.5,"icono":"sticker"},{"id":"lightstick-mini","nombre":"Mini lightstick llavero","categoria":"kpop","precio":12.0,"icono":"lightstick"},{"id":"fotolibro-kpop","nombre":"Mini fotolibro K-pop","categoria":"kpop","precio":10.0,"icono":"album"},{"id":"poster-kpop","nombre":"Póster mini K-pop","categoria":"kpop","precio":3.5,"icono":"poster"},{"id":"mascarilla-pepino","nombre":"Mascarilla coreana de pepino","categoria":"kbeauty","precio":4.5,"icono":"mascarilla"},{"id":"mascarilla-aloe","nombre":"Mascarilla coreana de aloe","categoria":"kbeauty","precio":4.5,"icono":"mascarilla"},{"id":"mascarilla-te-verde","nombre":"Mascarilla coreana de té verde","categoria":"kbeauty","precio":5.0,"icono":"mascarilla"},{"id":"parches-ojos","nombre":"Parches para ojos (par)","categoria":"kbeauty","precio":3.5,"icono":"parches-ojos"},{"id":"parches-granitos","nombre":"Parches para granitos","categoria":"kbeauty","precio":4.0,"icono":"parches-ojos"},{"id":"balsamo-fresa","nombre":"Bálsamo labial de fresa","categoria":"kbeauty","precio":15.0,"icono":"balsamo"},{"id":"lip-tint","nombre":"Lip tint coreano","categoria":"kbeauty","precio":9.0,"icono":"tint"},{"id":"crema-manos-durazno","nombre":"Crema de manos de durazno","categoria":"kbeauty","precio":30.0,"icono":"crema-manos"},{"id":"labial-mate","nombre":"Labial mate mini","categoria":"maquillaje","precio":8.0,"icono":"labial"},{"id":"brillo-labial","nombre":"Brillo labial","categoria":"maquillaje","precio":6.0,"icono":"brillo"},{"id":"rubor-crema","nombre":"Rubor en crema","categoria":"maquillaje","precio":9.0,"icono":"rubor"},{"id":"brocha","nombre":"Brocha de maquillaje","categoria":"maquillaje","precio":5.0,"icono":"brocha"},{"id":"esmalte","nombre":"Esmalte de uñas","categoria":"maquillaje","precio":4.5,"icono":"esmalte"},{"id":"esmalte-glitter","nombre":"Esmalte con brillitos","categoria":"maquillaje","precio":5.0,"icono":"esmalte"},{"id":"espejo-bolsillo","nombre":"Espejito de bolsillo","categoria":"maquillaje","precio":5.0,"icono":"espejo"},{"id":"scrunchie","nombre":"Scrunchie de satén","categoria":"accesorios","precio":3.0,"icono":"scrunchie"},{"id":"pinches-corazon","nombre":"Pinches de corazón (par)","categoria":"accesorios","precio":2.5,"icono":"pinche"},{"id":"pinza-garra","nombre":"Pinza garra para el cabello","categoria":"accesorios","precio":4.0,"icono":"pinza"},{"id":"medias-navidenas","nombre":"Medias navideñas","categoria":"accesorios","precio":6.0,"icono":"medias"},{"id":"llavero-peluche","nombre":"Llavero de peluchito","categoria":"accesorios","precio":6.0,"icono":"llavero"},{"id":"espejo-corazon","nombre":"Espejito de corazón","categoria":"accesorios","precio":6.0,"icono":"espejo"},{"id":"aretes-corazon","nombre":"Aretes de corazón","categoria":"bisuteria","precio":5.0,"icono":"aretes"},{"id":"aretes-perla","nombre":"Aretes de perla","categoria":"bisuteria","precio":6.0,"icono":"aretes"},{"id":"anillo-ajustable","nombre":"Anillo ajustable","categoria":"bisuteria","precio":19.7,"icono":"anillo"},{"id":"pulsera-hilo","nombre":"Pulsera de hilo con dije","categoria":"bisuteria","precio":36.0,"icono":"pulsera"},{"id":"pulsera-mostacillas","nombre":"Pulsera de mostacillas","categoria":"bisuteria","precio":3.5,"icono":"pulsera"},{"id":"collar-luna","nombre":"Collar con dije de luna","categoria":"bisuteria","precio":8.0,"icono":"collar"},{"id":"collar-inicial","nombre":"Collar con inicial","categoria":"bisuteria","precio":12.0,"icono":"collar"},{"id":"vela-aromatica","nombre":"Velita de corazón","categoria":"cuidado","precio":1.8,"icono":"vela"},{"id":"balsamo-cacao","nombre":"Bálsamo de cacao","categoria":"cuidado","precio":3.5,"icono":"balsamo"},{"id":"crema-corporal","nombre":"Crema corporal mini","categoria":"cuidado","precio":6.0,"icono":"crema-manos"},{"id":"colonia-bolsillo","nombre":"Colonia de bolsillo","categoria":"cuidado","precio":8.0,"icono":"perfume"},{"id":"perfume-mini","nombre":"Perfume mini roll-on","categoria":"cuidado","precio":10.0,"icono":"perfume"},{"id":"aceite-barba","nombre":"Aceite para barba","categoria":"cuidado","precio":15.0,"icono":"barba"},{"id":"peine-barba","nombre":"Peine para barba","categoria":"cuidado","precio":5.0,"icono":"barba"},{"id":"lapicero-gel","nombre":"Lapicero de gel kawaii","categoria":"papeleria","precio":3.0,"icono":"lapicero"},{"id":"lapicero-pompon","nombre":"Lapicero con pompón","categoria":"papeleria","precio":4.0,"icono":"lapicero"},{"id":"resaltador-pastel","nombre":"Resaltador pastel","categoria":"papeleria","precio":3.0,"icono":"lapicero"},{"id":"libreta-mini","nombre":"Libreta mini","categoria":"papeleria","precio":5.0,"icono":"libreta"},{"id":"post-its","nombre":"Notas adhesivas de colores","categoria":"papeleria","precio":3.5,"icono":"libreta"},{"id":"stickers-kawaii","nombre":"Stickers kawaii","categoria":"papeleria","precio":2.0,"icono":"sticker"},{"id":"juguete-sorpresa","nombre":"Juguete sorpresa","categoria":"ninos","precio":4.0,"icono":"juguete"},{"id":"carrito","nombre":"Carrito de juguete","categoria":"ninos","precio":5.0,"icono":"juguete"},{"id":"burbujero","nombre":"Burbujero","categoria":"ninos","precio":2.5,"icono":"juguete"},{"id":"plastilina","nombre":"Plastilina de colores","categoria":"ninos","precio":3.0,"icono":"juguete"},{"id":"colores-x6","nombre":"Colores x 6","categoria":"ninos","precio":4.0,"icono":"colores"},{"id":"figurita-animal","nombre":"Figurita de animalito","categoria":"ninos","precio":3.5,"icono":"figurita"},{"id":"figurita-dino","nombre":"Figurita de dinosaurio","categoria":"ninos","precio":3.5,"icono":"figurita"},{"id":"stickers-animalitos","nombre":"Stickers de animalitos","categoria":"ninos","precio":2.0,"icono":"sticker"},{"id":"carta","nombre":"Carta escrita a mano","categoria":"detalles","precio":3.0,"icono":"carta"},{"id":"mensaje-motivador","nombre":"Mensajito motivador","categoria":"detalles","precio":1.0,"icono":"carta"},{"id":"vale-abrazo","nombre":"Vale por un abrazo","categoria":"detalles","precio":1.0,"icono":"vale"},{"id":"vale-cita","nombre":"Vale por una cita","categoria":"detalles","precio":1.0,"icono":"vale"},{"id":"vale-desayuno","nombre":"Vale por un desayuno en la cama","categoria":"detalles","precio":1.0,"icono":"vale"},{"id":"vale-peli","nombre":"Vale por una peli juntos","categoria":"detalles","precio":1.0,"icono":"vale"},{"id":"foto-impresa","nombre":"Foto impresa","categoria":"detalles","precio":2.0,"icono":"foto"},{"id":"foto-polaroid","nombre":"Foto estilo polaroid","categoria":"detalles","precio":3.0,"icono":"foto"},{"id":"taza-navidena","nombre":"Mini taza navideña","categoria":"detalles","precio":12.0,"icono":"taza"},{"id":"regalo-sorpresa","nombre":"Regalo sorpresa especial","categoria":"detalles","precio":29.9,"icono":"regalo"},{"id":"milkis","nombre":"Gaseosa coreana Milkis (lata)","categoria":"snacks","precio":8.4,"icono":"gaseosa"},{"id":"bebida-arroz","nombre":"Bebida coreana de arroz","categoria":"snacks","precio":8.4,"icono":"jugo"},{"id":"vizzio","nombre":"Chocolate Vizzio almendra","categoria":"dulces","precio":1.5,"icono":"chocolate-bombon"},{"id":"mascarilla-fresa","nombre":"Mascarilla coreana de fresa","categoria":"kbeauty","precio":3.6,"icono":"mascarilla"},{"id":"limpiador-facial","nombre":"Limpiador facial mini","categoria":"kbeauty","precio":10.2,"icono":"crema-manos"},{"id":"esponja","nombre":"Esponja de maquillaje","categoria":"maquillaje","precio":1.2,"icono":"brocha"},{"id":"mono-pelo","nombre":"Moño para el pelo","categoria":"accesorios","precio":6.0,"icono":"scrunchie"},{"id":"ganchitos","nombre":"Ganchitos de colores (bolsita)","categoria":"accesorios","precio":3.5,"icono":"pinza"},{"id":"neceser","nombre":"Neceser mini","categoria":"accesorios","precio":8.3,"icono":"regalo","foto":"img/prod/neceser.jpg"},{"id":"aretes-flor","nombre":"Aretes de flor","categoria":"bisuteria","precio":19.7,"icono":"aretes","foto":"img/prod/aretes-flor.jpg"},{"id":"mini-fondy","nombre":"Chocolatito Mini Fondy","categoria":"dulces","precio":2.3,"icono":"chocolate-caja"},{"id":"caramelo-cafe","nombre":"Caramelos de café Kopiko (5 unid.)","categoria":"dulces","precio":3.0,"icono":"caramelo"}],"tematicas":[{"id":"dulce-peruano","nombre":"Dulce peruano","emoji":"🍫","descripcion":"Los clásicos de la bodega: Sublime, Tuyo, Cua Cua, Doña Pepa y más.","dias":["sublime","cua-cua","dona-pepa","princesa","picaras","chocman","inca-kola","triangulo","morochas","casino","alfajor-manjar","caramelos-fresa","sublime-almendras","toffee","frunas","canchita","hony-bran","tuyo","chin-chin","chocolate-caliente","chocman","turron-mini","sublime","panetoncito"]},{"id":"k-pop-lover","nombre":"K-pop lover","emoji":"💜","descripcion":"Photocards, stickers y antojitos coreanos para fans.","dias":["pc-bias","pepero","stickers-kpop","pc-holo","leche-platano","pc-navidad","gomitas","pc-bias","llavero-kpop","poster-kpop","pc-holo","ramen","stickers-kawaii","pc-bias","pepero","lapicero-gel","pc-holo","poster-kpop","pc-navidad","leche-platano","pc-bias","fotolibro-kpop","llavero-kpop","lightstick-mini"]},{"id":"k-beauty-glow","nombre":"K-beauty glow","emoji":"✨","descripcion":"Mascarillas, parches y bálsamos para brillar en diciembre.","dias":["mascarilla-pepino","parches-ojos","balsamo-fresa","mascarilla-aloe","scrunchie","mascarilla-te-verde","parches-granitos","pepero","mascarilla-pepino","crema-manos-durazno","parches-ojos","mascarilla-aloe","esmalte","mascarilla-te-verde","leche-platano","parches-granitos","mascarilla-pepino","balsamo-fresa","parches-ojos","mascarilla-aloe","espejo-bolsillo","vela-aromatica","mascarilla-te-verde","lip-tint"]},{"id":"glam","nombre":"Glam","emoji":"💄","descripcion":"Maquillaje y detallitos para lucir regia.","dias":["brillo-labial","esmalte","pinches-corazon","bon-o-bon","brocha","balsamo-fresa","esmalte-glitter","scrunchie","ferrero","espejo-bolsillo","aretes-corazon","mascarilla-pepino","brillo-labial","pinza-garra","esmalte","parches-ojos","lip-tint","ferrero","esmalte-glitter","rubor-crema","pulsera-hilo","colonia-bolsillo","brocha","labial-mate"]},{"id":"bisuteria","nombre":"Bisutería y accesorios","emoji":"💍","descripcion":"Aretes, pulseras, anillos y accesorios para el cabello.","dias":["pulsera-mostacillas","scrunchie","aretes-corazon","pinches-corazon","anillo-ajustable","bon-o-bon","pulsera-hilo","pinza-garra","aretes-perla","llavero-peluche","scrunchie","pulsera-mostacillas","ferrero","anillo-ajustable","pinches-corazon","aretes-corazon","espejo-corazon","pulsera-hilo","pinza-garra","aretes-perla","collar-luna","anillo-ajustable","ferrero","collar-inicial"]},{"id":"para-mi-amor","nombre":"Para mi amor","emoji":"💗","descripcion":"Chocolates, vales y recuerdos para tu persona favorita.","dias":["carta","sublime","vale-abrazo","ferrero","foto-impresa","bon-o-bon","vale-peli","mensaje-motivador","triangulo","foto-polaroid","vale-desayuno","alfajor-manjar","chocolate-caliente","vale-cita","ferrero","foto-impresa","sublime-almendras","vela-aromatica","vale-abrazo","foto-polaroid","caja-bombones","carta","taza-navidena","regalo-sorpresa"]},{"id":"para-el","nombre":"Para él","emoji":"🧔","descripcion":"Snacks, bebidas y cositas para él.","dias":["inka-chips","snickers","cafe-sobre","cuates","rehidratante","piqueo-snax","volt","kit-kat","chifles","peine-barba","inca-kola","cheese-tris","medias-navidenas","hony-bran","canchita","sublime-almendras","vale-peli","ramen","snickers","coca-cola","cafe-sobre","foto-impresa","carta","aceite-barba"]},{"id":"ninos","nombre":"Para niños","emoji":"🧸","descripcion":"Juguetitos, figuritas, colores y golosinas para los peques.","dias":["chupa-chups","stickers-animalitos","gomitas","figurita-animal","cua-cua","burbujero","frugos","colores-x6","marshmallows","figurita-dino","chocman","juguete-sorpresa","caramelos-fresa","plastilina","oreo","figurita-animal","picaras","carrito","stickers-animalitos","chocolate-caliente","figurita-dino","juguete-sorpresa","medias-navidenas","regalo-sorpresa"]},{"id":"mixto","nombre":"Mixto","emoji":"🎄","descripcion":"Un poquito de todo: dulces, snacks, belleza y detalles.","dias":["sublime","pc-bias","inka-chips","mascarilla-pepino","cua-cua","scrunchie","inca-kola","lapicero-gel","dona-pepa","aretes-corazon","stickers-kawaii","pepero","esmalte","vale-abrazo","bon-o-bon","parches-ojos","gomitas","libreta-mini","foto-impresa","chocolate-caliente","pulsera-hilo","panetoncito","carta","taza-navidena"]}],"virtual":{"precio":5,"demo":"https://david123yacango-spec.github.io/calendario-adviento/v/","estilos":[{"id":"kawaii","nombre":"Kawaii","emoji":"🎀"},{"id":"magico","nombre":"Mágico","emoji":"✨"},{"id":"glam","nombre":"Glam","emoji":"🖤"},{"id":"chocolateria","nombre":"Chocolatería","emoji":"🍫"},{"id":"bloques","nombre":"Bloquecitos","emoji":"🧱"},{"id":"kpop","nombre":"K-pop","emoji":"🎤"},{"id":"kbeauty","nombre":"K-beauty","emoji":"🌸"},{"id":"joyero","nombre":"Joyero","emoji":"💍"},{"id":"para-el","nombre":"Para él","emoji":"🧔"}],"porTematica":{"dulce-peruano":"chocolateria","k-pop-lover":"kpop","k-beauty-glow":"kbeauty","glam":"glam","bisuteria":"joyero","para-mi-amor":"kawaii","para-el":"para-el","ninos":"bloques","mixto":"magico","cero":"kawaii"}}};</script>
 <script>
 // Íconos propios del calendario de adviento (SVG 64x64, estilo kawaii plano).
 // Generados a mano; sin marcas ni personajes con derechos.
@@ -573,7 +683,13 @@ var $ = function(id){ return document.getElementById(id); };
 function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 function cent(n){ return Math.round(Number(n) * 100); }
 function soles(c){ return "S/ " + (c / 100).toFixed(2); }
+/* Precio por producto oculto: solo se marca 💎 Premium en los de S/ 10 a más */
+var PREMIUM = 1000;
+function esPremium(p){ return cent(p.precio) >= PREMIUM; }
+function marca(p, cls){ return esPremium(p) ? '<span class="' + cls + ' prem">💎 Premium</span>' : ''; }
 function icono(id){ return ICONOS[id] || ICONOS["regalo"] || ""; }
+/* Foto real del producto si la hay; si no, su dibujito */
+function imagen(p){ return p.foto ? '<img class="foto-p" src="' + esc(p.foto) + '" alt="" loading="lazy" decoding="async">' : icono(p.icono); }
 function norm(s){ return String(s).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase(); }
 
 var PROD = {}, CAJA = {}, TEMA = {}, CAT = {};
@@ -594,9 +710,26 @@ var DISPOSICION = [
 var COLORES = ["#ff7eb6","#8b5cf6","#ffb23f","#3fbf7f","#ff6b6b","#5aa9ff","#e26fd6","#f59e5b","#2fb5a8","#ff8fa3","#a78bfa","#f6c343"];
 
 /* ---------- Estado ---------- */
+// Calendario virtual (opcional: si el catálogo no trae «virtual», no se muestra nada)
+var V = C.virtual && Array.isArray(C.virtual.estilos) && C.virtual.estilos.length ? C.virtual : null;
+var ESTILO = {};
+if (V) V.estilos.forEach(function(s){ ESTILO[s.id] = s; });
+var LINEA_ESTILO = {
+  kawaii: "Pastel, tierno y con corazoncitos", magico: "Estrellas y brillo de noche de invierno",
+  glam: "Negro, dorado y mucho brillo", chocolateria: "Bombones y vitrina de cacao",
+  bloques: "Bloquecitos de colores, ideal para niños", kpop: "Luces de escenario y photocards",
+  kbeauty: "Rutina glow en tonos suaves", joyero: "Estuche de terciopelo y destellos",
+  "para-el": "Sobrio, cálido y con estilo"
+};
+function precioV(){ return V ? cent(V.precio) : 0; }
+function demoV(id){ return V.demo + (V.demo.indexOf("?") < 0 ? "?" : "&") + "estilo=" + encodeURIComponent(id); }
+
 function estadoNuevo(){
   return { caja: null, tema: null, dias: new Array(24).fill(null),
-    datos: { nombre:"", para:"", ciudad:"", fecha:"", tapa:"", comentario:"" } };
+    datos: { nombre:"", para:"", ciudad:"", fecha:"", tapa:"", comentario:"" },
+    // virtual: agregado a la caja; «manual» = la persona eligió el estilo (ya no sigue a la temática)
+    virtual: { on: false, estilo: null, manual: false },
+    soloVirtual: { estilo: null, para: "" } };
 }
 var E = estadoNuevo();
 function cargar(){
@@ -607,6 +740,15 @@ function cargar(){
     if (TEMA[o.tema] || o.tema === "cero") E.tema = o.tema;
     if (Array.isArray(o.dias)) for (var i = 0; i < 24; i++) E.dias[i] = PROD[o.dias[i]] ? o.dias[i] : null;
     if (o.datos) Object.keys(E.datos).forEach(function(k){ if (typeof o.datos[k] === "string") E.datos[k] = o.datos[k]; });
+    if (o.virtual && typeof o.virtual === "object") {
+      E.virtual.on = o.virtual.on === true;
+      E.virtual.manual = o.virtual.manual === true && !!ESTILO[o.virtual.estilo];
+      E.virtual.estilo = ESTILO[o.virtual.estilo] ? o.virtual.estilo : null;
+    }
+    if (o.soloVirtual && typeof o.soloVirtual === "object") {
+      if (ESTILO[o.soloVirtual.estilo]) E.soloVirtual.estilo = o.soloVirtual.estilo;
+      if (typeof o.soloVirtual.para === "string") E.soloVirtual.para = o.soloVirtual.para.slice(0, 60);
+    }
   } catch (e) {}
 }
 function guardar(){ try { localStorage.setItem(CLAVE, JSON.stringify(E)); } catch (e) {} }
@@ -614,7 +756,11 @@ function guardar(){ try { localStorage.setItem(CLAVE, JSON.stringify(E)); } catc
 function llenas(){ return E.dias.filter(Boolean).length; }
 function sumaSorpresas(){ return E.dias.reduce(function(s, id){ return s + (id ? cent(PROD[id].precio) : 0); }, 0); }
 function precioCaja(){ return E.caja ? cent(CAJA[E.caja].precio) : 0; }
-function total(){ return precioCaja() + sumaSorpresas(); }
+function conVirtual(){ return !!(V && E.virtual.on); }
+function total(){ return precioCaja() + sumaSorpresas() + (conVirtual() ? precioV() : 0); }
+// Estilo del agregado: el que eligió la persona o, si no tocó nada, el que va con la temática
+function estiloAuto(){ var id = V && V.porTematica ? V.porTematica[E.tema || "cero"] || V.porTematica.cero : null; return ESTILO[id] ? id : V.estilos[0].id; }
+function estiloV(){ return E.virtual.manual && ESTILO[E.virtual.estilo] ? E.virtual.estilo : estiloAuto(); }
 
 /* ---------- Aviso y diálogo ---------- */
 var tt;
@@ -733,7 +879,7 @@ function abrirVerTema(id, origen){
     return '<section class="vt-grupo"><h4>' + esc(g.c.emoji + " " + g.c.nombre) + ' <small>· ' + g.n + (g.n === 1 ? ' cajita' : ' cajitas') + '</small></h4><div class="vt-prods">' +
       g.ps.map(function(pid){ var p = PROD[pid];
         return '<div class="vt-p">' + (veces[pid] > 1 ? '<span class="veces" aria-label="viene ' + veces[pid] + ' veces">×' + veces[pid] + '</span>' : '') +
-          '<span class="ico-p" aria-hidden="true">' + icono(p.icono) + '</span><span class="nom">' + esc(p.nombre) + '</span><span class="pre">' + soles(cent(p.precio)) + '</span></div>';
+          '<span class="ico-p" aria-hidden="true">' + imagen(p) + '</span><span class="nom">' + esc(p.nombre) + '</span>' + marca(p, 'pre') + '</div>';
       }).join("") + '</div></section>';
   }).join("");
   var ya = E.tema === id;
@@ -855,11 +1001,11 @@ function pintarVitrina(animar){
   v.className = "vitrina" + (p ? "" : " vacia");
   v.style.setProperty("--c1", colorCajita(H.n));
   v.innerHTML = p
-    ? '<div class="cajon"><span class="num">' + H.n + '</span><span class="ico-v" aria-hidden="true">' + icono(p.icono) + '</span></div>' +
-      '<div class="info"><span class="v-nom">' + esc(p.nombre) + '</span><span class="v-pre">' + soles(cent(p.precio)) + '</span>' +
+    ? '<div class="cajon"><span class="num">' + H.n + '</span><span class="ico-v' + (p.foto ? ' con-foto' : '') + '" aria-hidden="true">' + imagen(p) + '</span></div>' +
+      '<div class="info"><span class="v-nom">' + esc(p.nombre) + '</span>' + marca(p, 'v-pre') +
       '<span class="v-cat">' + (CAT[p.categoria] ? esc(CAT[p.categoria].emoji + " " + CAT[p.categoria].nombre) : "") + '</span></div>'
     : '<div class="cajon"><span class="q" aria-hidden="true">?</span></div><div class="info"><span class="v-nom">Vacía</span><span class="v-cat">Elige una sorpresa 👇</span></div>';
-  v.setAttribute("aria-label", "Cajita " + H.n + ": " + (p ? p.nombre + ", " + soles(cent(p.precio)) : "vacía"));
+  v.setAttribute("aria-label", "Cajita " + H.n + ": " + (p ? p.nombre + (esPremium(p) ? ", premium" : "") : "vacía"));
   if (animar && p) { void v.offsetWidth; v.classList.add("pop"); }
   $("h-quitar").disabled = !p; $("h-todas").disabled = !p || llenas() === 24;
 }
@@ -870,8 +1016,8 @@ function pintarProductos(){
   if (q) lista = lista.filter(function(p){ return norm(p.nombre + " " + (CAT[p.categoria] ? CAT[p.categoria].nombre : "")).indexOf(q) >= 0; });
   var actual = E.dias[H.n - 1];
   $("h-prods").innerHTML = lista.length ? lista.map(function(p){
-    return '<button type="button" class="prod" data-p="' + esc(p.id) + '" aria-pressed="' + (actual === p.id) + '" aria-label="' + esc(p.nombre + ", " + soles(cent(p.precio))) + '">' +
-      '<span class="ico-p" aria-hidden="true">' + icono(p.icono) + '</span><span class="nom">' + esc(p.nombre) + '</span><span class="pre">' + soles(cent(p.precio)) + '</span></button>';
+    return '<button type="button" class="prod" data-p="' + esc(p.id) + '" aria-pressed="' + (actual === p.id) + '" aria-label="' + esc(p.nombre + (esPremium(p) ? ", premium" : "")) + '">' +
+      '<span class="ico-p' + (p.foto ? ' con-foto' : '') + '" aria-hidden="true">' + imagen(p) + '</span><span class="nom">' + esc(p.nombre) + '</span>' + marca(p, 'pre') + '</button>';
   }).join("") : '<p class="vacio-lista">No encontré nada con «' + esc(H.q) + '» 🙈</p>';
 }
 $("h-chips").addEventListener("click", function(ev){
@@ -974,10 +1120,11 @@ function mensaje(){
   var L = ["Hola 👋 quiero mi Calendario de Adviento"];
   L.push("Caja: " + (E.caja ? CAJA[E.caja].emoji + " " + CAJA[E.caja].nombre + " (" + soles(precioCaja()) + ")" : "(sin elegir)"));
   L.push("Temática: " + nombreTema());
+  if (conVirtual()) L.push("📱 Calendario virtual con QR: estilo " + ESTILO[estiloV()].nombre + " (+" + soles(precioV()) + ")");
   L.push("");
   for (var i = 0; i < 24; i++) {
     var p = PROD[E.dias[i]];
-    L.push((i + 1) + " · " + (p ? p.nombre + " — " + soles(cent(p.precio)) : "(vacía)"));
+    L.push((i + 1) + " · " + (p ? p.nombre : "(vacía)"));
   }
   L.push("");
   L.push("Sorpresas: " + soles(sumaSorpresas()));
@@ -990,6 +1137,7 @@ function mensaje(){
   if (d.fecha) L.push("Fecha: " + fechaBonita(d.fecha));
   if (d.tapa.trim()) L.push("Tapa: " + d.tapa.trim());
   if (d.comentario.trim()) L.push("Comentario: " + d.comentario.trim());
+  if (conVirtual()) { L.push(""); L.push("Te mando los mensajes y fotos para el calendario virtual por aquí."); }
   return L.join("\n");
 }
 // api.whatsapp.com/send directo: wa.me redirige ahí y en la redirección cambia los emojis por «�»
@@ -1001,16 +1149,25 @@ function pintarResumen(){
   var h = "";
   for (var i = 0; i < 24; i++) {
     var p = PROD[E.dias[i]];
-    h += p ? '<li><span class="d">' + (i + 1) + '</span><span class="mi" aria-hidden="true">' + icono(p.icono) + '</span><span>' + esc(p.nombre) + '</span><span class="p">' + soles(cent(p.precio)) + '</span></li>'
+    h += p ? '<li><span class="d">' + (i + 1) + '</span><span class="mi" aria-hidden="true">' + icono(p.icono) + '</span><span>' + esc(p.nombre) + '</span></li>'
            : '<li class="vac"><span class="d">' + (i + 1) + '</span><span class="mi"></span><span>(vacía)</span><span class="p">—</span></li>';
   }
   $("r-dias").innerHTML = h;
   $("r-sorp").textContent = soles(sumaSorpresas());
   $("r-cajap").textContent = E.caja ? soles(precioCaja()) : "—";
+  $("r-v-fila").hidden = !conVirtual();
+  $("r-v").textContent = conVirtual() ? soles(precioV()) : "";
   $("r-total").textContent = soles(total());
   var f = 24 - llenas();
   $("r-falta").textContent = f ? faltan(f) + " por llenar." : "";
   $("r-msg").textContent = mensaje();
+}
+function abrirUrl(url){
+  var w = null;
+  // sin "noopener" en window.open: con él devuelve null siempre y la página se iría a WhatsApp
+  try { w = window.open(url, "_blank"); } catch (e) {}
+  if (w) { try { w.opener = null; } catch (e) {} }
+  else location.href = url;
 }
 function faltan(f){ return f === 1 ? "Te falta 1 cajita" : "Te faltan " + f + " cajitas"; }
 function campoMal(k){ var c = $("c-" + k); c.classList.add("mal"); return c; }
@@ -1021,13 +1178,7 @@ $("b-pedir").addEventListener("click", function(){
   if (!E.datos.ciudad.trim()) malos.push("ciudad");
   if (malos.length) { malos.forEach(campoMal); $("f-" + malos[0]).focus(); $("c-" + malos[0]).scrollIntoView({ block: "center" }); aviso("Faltan tus datos ✍️"); return; }
   var f = 24 - llenas();
-  function abrir(){
-    var url = urlWhatsApp(), w = null;
-    // sin "noopener" en window.open: con él devuelve null siempre y la página se iría a WhatsApp
-    try { w = window.open(url, "_blank"); } catch (e) {}
-    if (w) { try { w.opener = null; } catch (e) {} }
-    else location.href = url;
-  }
+  function abrir(){ abrirUrl(urlWhatsApp()); }
   if (!f) { abrir(); return; }
   preguntar(faltan(f), "Puedes pedir igual: en el mensaje van anotadas como «(vacía)» y lo conversamos por WhatsApp.", "Pedir igual", "Seguir llenando").then(function(v){
     if (v) abrir(); else if (v === false) irA("paso-llenar");
@@ -1035,13 +1186,81 @@ $("b-pedir").addEventListener("click", function(){
 });
 
 /* ---------- Barra, reinicio, pie ---------- */
-function pintarBarra(){ $("barra-info").innerHTML = "🎁 <b>" + llenas() + "/24</b> · Total <b>" + soles(total()) + "</b>"; }
+function pintarBarra(){ $("barra-info").innerHTML = '<span class="izq">🎁 <b>' + llenas() + "/24</b>" + (conVirtual() ? " · 📱 ·" : " · Total") + '</span> <b class="monto">' + soles(total()) + "</b>"; }
+
+/* ---------- Calendario virtual ---------- */
+function chipEstilo(s, sel, attr){
+  return '<button type="button" class="chip" ' + attr + '="' + esc(s.id) + '" aria-pressed="' + (s.id === sel) + '">' + esc(s.emoji + " " + s.nombre) + '</button>';
+}
+// Agregado a la caja (en «Tu pedido»)
+function pintarExtraV(){
+  if (!V) return;
+  var on = conVirtual(), est = estiloV();
+  $("extra-v").classList.toggle("on", on);
+  $("v-check").checked = on;
+  $("ev-estilos").hidden = !on;
+  $("ev-chips").innerHTML = V.estilos.map(function(s){ return chipEstilo(s, est, "data-ev"); }).join("");
+  $("ev-demo").href = demoV(est);
+  $("ev-demo").firstChild.nodeValue = "👀 Ver demostración" + (on ? "" : " del estilo " + ESTILO[est].nombre);
+  $("ev-auto").textContent = on && !E.virtual.manual && E.tema ? "✓ Va con tu temática" : "";
+}
+if (V) {
+  $("ev-pre").textContent = "(+" + soles(precioV()).replace(".00", "") + ")";
+  $("extra-v").hidden = false;
+  $("v-check").addEventListener("change", function(){
+    E.virtual.on = this.checked; guardar(); pintarTodo();
+    aviso(this.checked ? "📱 Calendario virtual agregado: estilo " + ESTILO[estiloV()].nombre : "Calendario virtual quitado");
+  });
+  $("ev-chips").addEventListener("click", function(ev){
+    var b = ev.target.closest("[data-ev]"); if (!b) return;
+    E.virtual.estilo = b.getAttribute("data-ev"); E.virtual.manual = true; guardar(); pintarTodo();
+    var nb = $("ev-chips").querySelector('[data-ev="' + E.virtual.estilo + '"]'); if (nb) nb.focus({ preventScroll: true });
+  });
+}
+
+// Sección «Calendario virtual» (solo el digital)
+function estiloSolo(){ return ESTILO[E.soloVirtual.estilo] ? E.soloVirtual.estilo : (ESTILO.magico ? "magico" : V.estilos[0].id); }
+function mensajeSoloV(){
+  var s = ESTILO[estiloSolo()], para = E.soloVirtual.para.trim();
+  return ["Hola 👋 quiero un calendario virtual ✨", "Estilo: " + s.emoji + " " + s.nombre, "Para: " + (para || "___"),
+    "Precio: " + soles(precioV()), "Te mando los mensajes y fotos por aquí."].join("\n");
+}
+function urlSoloV(){ return "https://api.whatsapp.com/send?phone=" + encodeURIComponent(C.whatsapp) + "&text=" + encodeURIComponent(mensajeSoloV()); }
+function pintarSoloV(){
+  if (!V) return;
+  var est = estiloSolo();
+  $("sv-estilos").innerHTML = V.estilos.map(function(s){
+    return '<div class="sv-car"><button type="button" class="sv-op" data-sv="' + esc(s.id) + '" aria-pressed="' + (s.id === est) + '">' +
+      '<span class="check" aria-hidden="true">✓</span><span class="emo" aria-hidden="true">' + esc(s.emoji) + '</span>' +
+      '<span class="nom">' + esc(s.nombre) + '</span><span class="des">' + esc(LINEA_ESTILO[s.id] || "Calendario digital de 24 puertas") + '</span></button>' +
+      '<a class="ver-demo" href="' + esc(demoV(s.id)) + '" target="_blank" rel="noopener" aria-label="Ver demo del estilo ' + esc(s.nombre) + ' (se abre en otra pestaña)">👀 Ver demo</a></div>';
+  }).join("");
+  var s = ESTILO[est];
+  $("sv-elegido").innerHTML = "Estilo elegido: <b>" + esc(s.emoji + " " + s.nombre) + "</b>";
+  $("sv-msg").textContent = mensajeSoloV();
+}
+if (V) {
+  var tPrecioV = soles(precioV()).replace(".00", "");
+  $("a-solo-v").textContent = "📱 ¿Solo virtual? " + tPrecioV;
+  $("li-solo-v").hidden = false;
+  $("b-pedir-v-txt").innerHTML = "Pedir calendario virtual <span class=\"np\">· " + esc(tPrecioV) + "</span>";
+  $("solo-virtual").hidden = false;
+  $("a-solo-v").addEventListener("click", function(ev){ ev.preventDefault(); irA("solo-virtual"); });
+  $("sv-para").value = E.soloVirtual.para;
+  $("sv-para").addEventListener("input", function(){ E.soloVirtual.para = this.value; guardar(); $("sv-msg").textContent = mensajeSoloV(); });
+  $("sv-estilos").addEventListener("click", function(ev){
+    var b = ev.target.closest("[data-sv]"); if (!b) return;
+    E.soloVirtual.estilo = b.getAttribute("data-sv"); guardar(); pintarSoloV();
+    var nb = $("sv-estilos").querySelector('[data-sv="' + E.soloVirtual.estilo + '"]'); if (nb) nb.focus({ preventScroll: true });
+  });
+  $("b-pedir-v").addEventListener("click", function(){ abrirUrl(urlSoloV()); });
+}
 function irA(id){ var el = $(id); if (el) el.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion:reduce)").matches ? "auto" : "smooth", block: "start" }); }
 $("b-ver").addEventListener("click", function(){ irA("paso-resumen"); });
 $("b-reinicio").addEventListener("click", function(){
   preguntar("¿Empezar de nuevo?", "Se borran la caja, las 24 cajitas y tus datos.", "Sí, empezar de nuevo", "Cancelar").then(function(v){
     if (!v) return; E = estadoNuevo(); try { localStorage.removeItem(CLAVE); } catch (e) {}
-    pintarDatos(); document.querySelectorAll(".campo.mal").forEach(function(c){ c.classList.remove("mal"); });
+    pintarDatos(); if (V) $("sv-para").value = ""; document.querySelectorAll(".campo.mal").forEach(function(c){ c.classList.remove("mal"); });
     pintarTodo(); window.scrollTo(0, 0); aviso("Listo, empezamos de nuevo ✨");
   });
 });
@@ -1050,8 +1269,8 @@ $("b-reinicio").addEventListener("click", function(){
   $("pie").innerHTML = 'Hecho con 💗 · Pedidos por WhatsApp <a href="https://wa.me/' + esc(C.whatsapp) + '" target="_blank" rel="noopener">' + esc(bonito) + '</a>';
 })();
 
-function pintarTodo(animar){ pintarCajas(); pintarTemas(); pintarCaja(animar); pintarResumen(); pintarBarra(); }
-cargar(); pintarDatos(); pintarTodo();
+function pintarTodo(animar){ pintarCajas(); pintarTemas(); pintarCaja(animar); pintarExtraV(); pintarResumen(); pintarBarra(); pintarSoloV(); }
+cargar(); pintarDatos(); if (V) $("sv-para").value = E.soloVirtual.para; pintarTodo();
 })();
 </script>
 <script>
